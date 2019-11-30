@@ -1,14 +1,12 @@
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class MyBirthdayCalendar
 {
     public static void main(String[] args) {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE", new Locale("ru"));
+        // cant find way to print days of week in russian without using java.util.Locale in DateTImeFormatter
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE");
         LocalDate myBD = LocalDate.of(1989, Month.JULY, 8);
         LocalDate now = LocalDate.now();
         int count = 0;
