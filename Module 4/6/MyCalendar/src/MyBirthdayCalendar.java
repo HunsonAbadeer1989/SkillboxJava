@@ -8,18 +8,13 @@ import java.util.Locale;
 public class MyBirthdayCalendar
 {
     public static void main(String[] args) {
-
-        Calendar myCalendar = Calendar.getInstance(new Locale("ru"));
-        Calendar calendar = Calendar.getInstance();
-        myCalendar.set(1989, Calendar.JULY, 8);
-
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE", new Locale("ru"));
-
-        for (int i = 0; myCalendar.get(Calendar.YEAR) <= calendar.get(Calendar.YEAR); ) {
-            LocalDate myBirthDate = LocalDate.of(myCalendar.get(Calendar.YEAR), Month.JULY, 8);
-            System.out.println(i + " - " + formatter.format(myBirthDate.getDayOfWeek()) + " \t\t " + myBirthDate);
-            myCalendar.add(Calendar.YEAR, 1);
-            i++;
-        }
+        LocalDate myBD = LocalDate.of(1989, Month.JULY, 8);
+        LocalDate now = LocalDate.now();
+        int count = 0;
+        do {
+            System.out.printf(" %d - %s - %s \n", count++, myBD, formatter.format(myBD));
+            myBD = myBD.plusYears(1);
+        } while ( myBD.isBefore(now));
     }
 }
