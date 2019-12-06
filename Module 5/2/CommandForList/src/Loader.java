@@ -25,41 +25,41 @@ public class Loader {
                         break;
                     case "ADD":
                         if (hasNum(commandMatcher.group("num"))) {
-                            if (inList(agendaList, getIndex(commandMatcher.group("num")))) {
-                                if (isEmpty(commandMatcher.group("business"))) {
+                            if (indexInList(agendaList, commandMatcher)) {
+                                if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    addBusiness(agendaList, getIndex(commandMatcher.group("num")), commandMatcher.group("business"));
+                                    addBusiness(agendaList, getNum(commandMatcher), getBusiness(commandMatcher));
                                 }
                             } else {
-                                if (isEmpty(commandMatcher.group("business"))) {
+                                if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    addBusiness(agendaList, commandMatcher.group("business"));
+                                    addBusiness(agendaList, getBusiness(commandMatcher));
                                 }
                             }
                         } else {
-                            if (isEmpty(commandMatcher.group("business"))) {
+                            if (isEmpty(getBusiness(commandMatcher))) {
                                 System.out.println("You forget input business!");
                             } else {
-                                addBusiness(agendaList, commandMatcher.group("business"));
+                                addBusiness(agendaList, getBusiness(commandMatcher));
                             }
                         }
                         break;
                     case "DELETE":
-                        if (hasNum(commandMatcher.group("num")) && inList(agendaList, getIndex(commandMatcher.group("num")))) {
-                            deleteBusiness(agendaList, getIndex(commandMatcher.group("num")));
+                        if (hasNum(commandMatcher.group("num")) && indexInList(agendaList, commandMatcher)) {
+                            deleteBusiness(agendaList, getNum(commandMatcher));
                         } else {
                             System.out.println("List hasn't that number!");
                         }
                         break;
                     case "EDIT":
                         if (hasNum(commandMatcher.group("num"))) {
-                            if (inList(agendaList, getIndex(commandMatcher.group("num")))) {
-                                if (isEmpty(commandMatcher.group("business"))) {
+                            if (indexInList(agendaList, commandMatcher)) {
+                                if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    editBusiness(agendaList, getIndex(commandMatcher.group("num")), commandMatcher.group("business"));
+                                    editBusiness(agendaList, getNum(commandMatcher), getBusiness(commandMatcher));
                                 }
                             } else {
                                 System.out.println("List have no business for this number!");
@@ -78,8 +78,16 @@ public class Loader {
             } else {
                 System.out.println("Bad input!");
             }
-            printList(agendaList);
         }
+    }
+    private static String getBusiness(Matcher commandMatcher) {
+        return commandMatcher.group("business");
+    }
+    private static int getNum(Matcher commandMatcher) {
+        return getIndex(commandMatcher.group("num"));
+    }
+    private static boolean indexInList(List<String> agendaList, Matcher commandMatcher) {
+        return inList(agendaList, getNum(commandMatcher));
     }
     private static void printList(List<String> list) {
         int business = 0;
