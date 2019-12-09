@@ -3,10 +3,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Loader {
+    private static List<String> agendaList = new ArrayList<>();
+
     public static void main(String[] args) {
-        boolean endProgram = false; // bool for control while cycle line 19
+        boolean endProgram = false; // bool for control while cycle line 17
         Scanner scan = new Scanner(System.in);
-        List<String> agendaList = new ArrayList<>();
         agendaList.add("Important business!");
         agendaList.add("Really hot business!");
         agendaList.add("Very important business!");
@@ -21,45 +22,45 @@ public class Loader {
             if (commandMatcher.find()) {
                 switch (commandMatcher.group("comm")) {
                     case "LIST":
-                        printList(agendaList);
+                        printList();
                         break;
                     case "ADD":
-                        if (hasNum(commandMatcher.group("num"))) {
-                            if (indexInList(agendaList, commandMatcher)) {
+                        if (commandMatcher.group("num") != null) {
+                            if (indexInList( commandMatcher)) {
                                 if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    addBusiness(agendaList, getNum(commandMatcher), getBusiness(commandMatcher));
+                                    addBusiness( getNum(commandMatcher), getBusiness(commandMatcher));
                                 }
                             } else {
                                 if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    addBusiness(agendaList, getBusiness(commandMatcher));
+                                    addBusiness(getBusiness(commandMatcher));
                                 }
                             }
                         } else {
                             if (isEmpty(getBusiness(commandMatcher))) {
                                 System.out.println("You forget input business!");
                             } else {
-                                addBusiness(agendaList, getBusiness(commandMatcher));
+                                addBusiness(getBusiness(commandMatcher));
                             }
                         }
                         break;
                     case "DELETE":
-                        if (hasNum(commandMatcher.group("num")) && indexInList(agendaList, commandMatcher)) {
-                            deleteBusiness(agendaList, getNum(commandMatcher));
+                        if (commandMatcher.group("num") != null && indexInList( commandMatcher)) {
+                            deleteBusiness( getNum(commandMatcher));
                         } else {
                             System.out.println("List hasn't that number!");
                         }
                         break;
                     case "EDIT":
-                        if (hasNum(commandMatcher.group("num"))) {
-                            if (indexInList(agendaList, commandMatcher)) {
+                        if (commandMatcher.group("num") != null) {
+                            if (indexInList( commandMatcher)) {
                                 if (isEmpty(getBusiness(commandMatcher))) {
                                     System.out.println("You forget input business!");
                                 } else {
-                                    editBusiness(agendaList, getNum(commandMatcher), getBusiness(commandMatcher));
+                                    editBusiness( getNum(commandMatcher), getBusiness(commandMatcher));
                                 }
                             } else {
                                 System.out.println("List have no business for this number!");
@@ -84,45 +85,36 @@ public class Loader {
         return commandMatcher.group("business");
     }
     private static int getNum(Matcher commandMatcher) {
-        return getIndex(commandMatcher.group("num"));
+        return Integer.parseInt(commandMatcher.group("num"));
     }
-    private static boolean indexInList(List<String> agendaList, Matcher commandMatcher) {
-        return inList(agendaList, getNum(commandMatcher));
+    private static boolean indexInList( Matcher commandMatcher) {
+        return getNum(commandMatcher) <= agendaList.size();
     }
-    private static void printList(List<String> list) {
+    private static void printList() {
         int business = 0;
-        for (String x : list)
+        for (String x : agendaList)
             System.out.printf("%d - %s\n", business++, x);
     }
-    private static void addBusiness(List<String> list, String business) {
-        list.add(business);
+    private static void addBusiness(String business) {
+        agendaList.add(business);
     }
-    private static void addBusiness(List<String> list, int to, String business) {
-        list.add(to, business);
+    private static void addBusiness( int to, String business) {
+        agendaList.add(to, business);
     }
-    private static void deleteBusiness(List<String> list, int number) {
-        if (number <= list.size()) {
-            list.remove(number);
+    private static void deleteBusiness( int number) {
+        if (number <= agendaList.size()) {
+            agendaList.remove(number);
         } else {
             System.out.println("List have no business by this number!");
         }
     }
-    private static void editBusiness(List<String> list, int number, String business) {
-        if (number <= list.size()) {
-            list.remove(number);
-            list.add(number, business);
+    private static void editBusiness( int number, String business) {
+        if (number <= agendaList.size()) {
+            agendaList.remove(number);
+            agendaList.add(number, business);
         } else {
             System.out.println("List have no business by this number!");
         }
-    }
-    private static boolean inList(List<String> list, int num) {
-        return num <= list.size();
-    }
-    private static boolean hasNum(String str) {
-        return str != null;
-    }
-    private static int getIndex(String str) {
-        return Integer.parseInt(str);
     }
     private static boolean isEmpty(String str) {
         return str != null && str.equals("");
