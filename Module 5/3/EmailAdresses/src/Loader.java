@@ -17,9 +17,9 @@ public class Loader {
         emailList.add("billdotrew1957@gmail.com");
 
         while (!end) {
-            Pattern commandPattern = Pattern.compile("^([A-Z]{3,4})\\s?(([a-zA-Z_]+)([a-zA-Z0-9_]*)@" +
+            Pattern commandPattern = Pattern.compile("^([A-Z]+)\\s?(([a-zA-Z_]+)([a-zA-Z0-9_]*)@" +
                     "(gmail|yandex|mail)\\.(ru|com)$)*");
-            System.out.println("Input command 'LIST' or 'ADD' and email': ");
+            System.out.println("Input command 'LIST' , 'ADD' or 'DELETE' and email': ");
             String userInput = scan.nextLine();
             Matcher commandMatcher = commandPattern.matcher(userInput);
             if (commandMatcher.find()) {
@@ -34,13 +34,23 @@ public class Loader {
                     case "LIST":
                         printList();
                         break;
+                    case "DELETE":
+                        if ( commandMatcher.group(2) != null ){
+                            if ( inList(commandMatcher.group(2)) ) {
+                                deleteFromList(commandMatcher.group(2));
+                            }
+                        }
+                        else {
+                                System.out.println("Wrong input!");
+                        }
+                        break;
                     case "END":
                         System.out.println("Good bye!");
                         end = true;
                         break;
                 }
             } else {
-                System.out.println("Incorrect input! Try again, only ADD, LIST and END commands.");
+                System.out.println("Incorrect input! Try again, only ADD, LIST, DELETE and END commands.");
             }
         }
     }
@@ -53,6 +63,11 @@ public class Loader {
 
     public static void addInList(String email) {
         emailList.add(email);
-        printList();
+    }
+    public static void deleteFromList( String email ) {
+        emailList.remove( email );
+    }
+    public static boolean inList( String email) {
+        return emailList.contains(email);
     }
 }
