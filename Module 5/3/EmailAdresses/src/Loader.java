@@ -35,13 +35,12 @@ public class Loader {
                         printList();
                         break;
                     case "DELETE":
-                        if ( commandMatcher.group(2) != null ){
-                            if ( inList(commandMatcher.group(2)) ) {
+                        if (commandMatcher.group(2) != null) {
+                            if (inList(commandMatcher.group(2))) {
                                 deleteFromList(commandMatcher.group(2));
                             }
-                        }
-                        else {
-                                System.out.println("Wrong input!");
+                        } else {
+                            System.out.println("Wrong input!");
                         }
                         break;
                     case "END":
@@ -64,10 +63,12 @@ public class Loader {
     public static void addInList(String email) {
         emailList.add(email);
     }
-    public static void deleteFromList( String email ) {
-        emailList.remove( email );
+
+    public static void deleteFromList(String email) {
+        emailList.remove(email);
     }
-    public static boolean inList( String email) {
+
+    public static boolean inList(String email) {
         return emailList.contains(email);
     }
 }

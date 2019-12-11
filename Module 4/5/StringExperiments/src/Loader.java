@@ -1,7 +1,7 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Loader
 {
@@ -9,18 +9,25 @@ public class Loader
     {
         String text = "Вася заработал 5000 рублей, Петя - 7563 рубля, а Маша - 30000 рублей.";
 
-        String[] numbers = text.replaceAll("[а-я-\\D]+|[А-Я-\\D]+", " ").trim().split(" ");
+        // The feature
+        Pattern patt = Pattern.compile("(\\d+)");
+        Matcher m = patt.matcher(text);
+        int result = 0;
+
+        while ( m.find() ){
+            result += Integer.parseInt(m.group(1));
+        }
+        System.out.println("Sum with pattern anm matcher: " + result);
 
         // This is the answer on Homework 4.1.
+        String[] numbers = text.replaceAll("[а-я-\\D]+|[А-Я-\\D]+", " ").trim().split(" ");
+
         int[] salaries = new int[numbers.length];
 
         int sum = 0;
 
-        for (int i = 0; i < salaries.length; ) {
-            for (String a : numbers) {
-                salaries[i] = Integer.parseInt(a);
-                i++;
-            }
+        for (int i = 0; i < salaries.length; i++) {
+            salaries[i] = Integer.parseInt(numbers[i]);
         }
 
         for (int k : salaries){
@@ -29,7 +36,8 @@ public class Loader
 
         System.out.println("Total salary: " + sum);
 
-//          This is the answer on homework 4.5.1
+
+        // This is the answer on homework 4.5.1
         int vasyaSalary = Integer.parseInt(numbers[0]);
         int petyaSalary = Integer.parseInt(numbers[1]);
         int mashaSalary = Integer.parseInt(numbers[2]);
@@ -38,15 +46,6 @@ public class Loader
         System.out.println("Petya salary: " + petyaSalary);
         System.out.println("Masha salary: " + mashaSalary);
 
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Input Surname Name Patronymic: ");
-
-        String[] str = scan.nextLine().split(" ", 3);
-
-        System.out.println("Surname: " + str[0]);
-        System.out.println("Name: " + str[1]);
-        System.out.println("Patronymic: " + str[2]);
 
     }
 }

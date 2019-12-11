@@ -81,6 +81,7 @@ public class Loader {
             }
         }
     }
+
     private static String getBusiness(Matcher commandMatcher) {
         return commandMatcher.group("business");
     }
