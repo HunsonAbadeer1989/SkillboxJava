@@ -34,32 +34,37 @@ public class CarNumber {
     }
 
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         List<String> carsNumbers = getCarsNumbers();
-        for(String num: carsNumbers){
-            System.out.println(num);
-        }
+//        for(String num: carsNumbers){
+//            System.out.println(num);
+//        }
 
-        /** Contain Search - is about 0.013767ms key was found */
-        long endOfContainSearch = System.currentTimeMillis() - start;
-        System.out.println(carsNumbers.contains("A999AA190"));
-        System.out.println(String.format("Contain search:[%fms]", (float) endOfContainSearch/1000000 ));
+        /** Contain Search - is about 3.988571s key was found */
+        long endOfContainSearch = System.nanoTime() - start;
+        System.out.println(carsNumbers.contains("Y999YY197"));
+        System.out.println(String.format("Contain search:[%fs]", (float) endOfContainSearch/1000000000 ));
 
-        /** Binary Search - is about 0.013732ms found in 287092 position */
-        long endOfBinarySearch = System.currentTimeMillis() - start;
-        System.out.println(Collections.binarySearch(carsNumbers, "A999AA190"));
-        System.out.println(String.format("Binary search:[%fms]", (float) endOfBinarySearch/1000000 ));
+        /** Binary Search - is about 4.023740s found in 287092 position
+         * Useful when array isn't changing often. Because update it really slow. */
+        long endOfBinarySearch = System.nanoTime() - start;
+        System.out.println(Collections.binarySearch(carsNumbers, "Y999YY197"));
+        System.out.println(String.format("Binary search:[%fs]", (float) endOfBinarySearch/1000000000 ));
 
-        /** HashSet Search - is about 0.015122ms key was found */
+        /** HashSet Search - is about 4.215626s key was found
+         * Constant time of search, insert and delete of element.
+         * Useful in case when order of elements is not necessary. */
         Set<String> hashSetNumbers = new HashSet<>(carsNumbers);
-        long endOfHashSearch = System.currentTimeMillis() - start;
-        System.out.println(hashSetNumbers.contains("A999AA190"));
-        System.out.println(String.format("HashSet search: [%fms]", (float) endOfHashSearch/1000000 ));
+        long endOfHashSearch = System.nanoTime() - start;
+        System.out.println(hashSetNumbers.contains("Y999YY197"));
+        System.out.println(String.format("HashSet search: [%fs]", (float) endOfHashSearch/1000000000 ));
 
-        /** TreeSet Search - is about 0.014827ms key was found */
+        /** TreeSet Search - is about 5.221025s key was found
+         * The time of search, insert and delete isn't good as HashSet. But fine O(log n)
+         *  Useful when we need order of elements. */
         Set<String> treeSetNumbers = new TreeSet<>(carsNumbers);
-        long endOfTreeSearch = System.currentTimeMillis() - start;
-        System.out.println(treeSetNumbers.contains("A999AA190"));
-        System.out.println(String.format("TreeSet search: [%fms]", (float) endOfTreeSearch/1000000 ));
+        long endOfTreeSearch = System.nanoTime() - start;
+        System.out.println(treeSetNumbers.contains("Y999YY197"));
+        System.out.println(String.format("TreeSet search: [%fs]", (float) endOfTreeSearch/1000000000 ));
     }
 }
