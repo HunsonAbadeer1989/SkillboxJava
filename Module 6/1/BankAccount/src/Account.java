@@ -8,6 +8,8 @@
 
 public abstract class Account
 {
+
     abstract void addMoney(double cash);
     abstract void withdrawMoney(double cash);
+    abstract boolean transferTo(Account account, double money);
 }

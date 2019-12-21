@@ -1,17 +1,14 @@
 import java.time.LocalDate;
 
-public class DepositAccount extends Account{
+public class DepositAccount extends Account {
 
-    DepositAccount(double fund){
+    DepositAccount(double fund) {
         this.fund = fund;
+        setDateOfLastAdd(LocalDate.now());
     }
 
     private double fund;
     private LocalDate dateOfLastAdd;
-
-    LocalDate getDateOfLastAdd() {
-        return dateOfLastAdd;
-    }
 
     void setDateOfLastAdd(LocalDate dateOfLastAdd) {
         this.dateOfLastAdd = dateOfLastAdd;
@@ -33,22 +30,35 @@ public class DepositAccount extends Account{
 
     @Override
     void withdrawMoney(double cash) {
-        if (wasMonthAgo()){
-            if ( cash > getFund()){
+        if (wasMonthAgo()) {
+            if (cash > getFund()) {
                 System.out.println("You haven't this amount of money!");
-            }
-            else {
+            } else {
                 setFund(getFund() - cash);
             }
-        }
-        else {
-            System.out.printf("To soon! You can take your money %s%n", getDateOfLastAdd().plusMonths(1));
+        } else {
+            System.out.printf("To soon! You can take your money %s%n", dateOfLastAdd.plusMonths(1));
         }
     }
 
-    boolean wasMonthAgo(){
+    @Override
+    boolean transferTo(Account account, double money) {
+        if (money < 0) {
+            return false;
+        }
+        if (wasMonthAgo()) {
+            withdrawMoney(money);
+            account.addMoney(money);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean wasMonthAgo() {
         LocalDate now = LocalDate.now();
-        LocalDate lastChange = getDateOfLastAdd();
-        return now.minusMonths(1).isAfter(lastChange) || now.minusMonths(1).isEqual(lastChange);
+//        LocalDate now = dateOfLastAdd.plusMonths(2); //If it still here, that mean I will check method in future
+        LocalDate lastChange = dateOfLastAdd;
+        return !now.minusMonths(1).isBefore(lastChange);
     }
 }

@@ -22,16 +22,34 @@ public class CardAccount extends Account {
 
     @Override
     void withdrawMoney(double cash) {
-        cash = cash + cash * TAX;
-        boolean canWithdraw = cash + cash * TAX <= getFund();
-        if (canWithdraw){
-             setFund(getFund() - cash);
-    }
-        else {
+        if (isCanWithdraw(cashWithTax(cash))) {
+            setFund(getFund() - cashWithTax(cash));
+        } else {
             System.out.println("You can't withdraw this amount of money!");
         }
     }
 
+    private boolean isCanWithdraw(double cash) {
+        return cash + cash * TAX <= getFund();
+    }
+
+    @Override
+    boolean transferTo(Account account, double money) {
+        if (money < 0){
+            return false;
+        }
+        if (isCanWithdraw(cashWithTax(money))) {
+            withdrawMoney(money);
+            account.addMoney(money);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private double cashWithTax(double cash) {
+        return cash + cash * TAX;
+    }
 }
 
 
