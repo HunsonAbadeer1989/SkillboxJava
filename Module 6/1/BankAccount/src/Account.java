@@ -8,8 +8,30 @@
 
 public abstract class Account
 {
+    Account(double fund){
+        setFund(fund);
+    }
+    protected double fund;
+
+    protected double getFund() {
+        return fund;
+    }
+
+    protected void setFund(double fund) {
+        this.fund = fund;
+    }
 
     abstract void addMoney(double cash);
-    abstract void withdrawMoney(double cash);
-    abstract boolean transferTo(Account account, double money);
+    abstract boolean withdrawMoney(double cash);
+    boolean transferTo(Account account, double money){
+        if (money < 0) {
+            return false;
+        }
+        if (withdrawMoney(money)) {
+            account.addMoney(money);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

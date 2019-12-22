@@ -4,15 +4,7 @@ public class CardAccount extends Account {
     private static final double TAX = 0.01;
 
     public CardAccount(double fund) {
-        this.fund = fund;
-    }
-
-    double getFund() {
-        return fund;
-    }
-
-    void setFund(double fund) {
-        this.fund = fund;
+        super(fund);
     }
 
     @Override
@@ -21,11 +13,13 @@ public class CardAccount extends Account {
     }
 
     @Override
-    void withdrawMoney(double cash) {
+    boolean withdrawMoney(double cash) {
         if (isCanWithdraw(cashWithTax(cash))) {
             setFund(getFund() - cashWithTax(cash));
+            return true;
         } else {
             System.out.println("You can't withdraw this amount of money!");
+            return false;
         }
     }
 
@@ -35,16 +29,7 @@ public class CardAccount extends Account {
 
     @Override
     boolean transferTo(Account account, double money) {
-        if (money < 0){
-            return false;
-        }
-        if (isCanWithdraw(cashWithTax(money))) {
-            withdrawMoney(money);
-            account.addMoney(money);
-            return true;
-        } else {
-            return false;
-        }
+        return super.transferTo(account, money);
     }
 
     private double cashWithTax(double cash) {
