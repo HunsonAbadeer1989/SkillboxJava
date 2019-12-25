@@ -1,6 +1,5 @@
 public class CardAccount extends Account {
 
-    private double fund;
     private static final double TAX = 0.01;
 
     public CardAccount(double fund) {
@@ -9,13 +8,14 @@ public class CardAccount extends Account {
 
     @Override
     void addMoney(double cash) {
-        setFund(getFund() + cash);
+        super.addMoney(cash);
     }
 
     @Override
     boolean withdrawMoney(double cash) {
-        if (isCanWithdraw(cashWithTax(cash))) {
-            setFund(getFund() - cashWithTax(cash));
+        cash = cashWithTax(cash);
+        if (isCanWithdraw(cash)) {
+            super.withdrawMoney(cash);
             return true;
         } else {
             System.out.println("You can't withdraw this amount of money!");

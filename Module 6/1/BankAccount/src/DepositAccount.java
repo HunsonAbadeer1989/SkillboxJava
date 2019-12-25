@@ -16,7 +16,7 @@ public class DepositAccount extends Account {
     @Override
     void addMoney(double cash) {
         setDateOfLastAdd(LocalDate.now());
-        setFund(getFund() + cash);
+        super.addMoney(cash);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class DepositAccount extends Account {
                 System.out.println("You haven't this amount of money!");
                 return false;
             } else {
-                setFund(getFund() - cash);
+                super.withdrawMoney(cash);
                 return true;
             }
         } else {
@@ -35,7 +35,6 @@ public class DepositAccount extends Account {
         }
     }
 
-    @Override
     boolean transferTo(Account account, double money) {
         return super.transferTo(account, money);
     }

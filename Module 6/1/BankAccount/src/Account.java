@@ -21,8 +21,13 @@ public abstract class Account
         this.fund = fund;
     }
 
-    abstract void addMoney(double cash);
-    abstract boolean withdrawMoney(double cash);
+    void addMoney(double cash){
+        setFund(getFund() + cash);
+    }
+    boolean withdrawMoney(double cash){
+        setFund(getFund() - cash);
+        return true;
+    }
     boolean transferTo(Account account, double money){
         if (money < 0) {
             return false;
