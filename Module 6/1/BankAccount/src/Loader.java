@@ -22,7 +22,8 @@ public class Loader
         myCardAcc.withdrawMoney(10000.0);
         System.out.println();
 
-        myDepositAccount.transferTo(myCardAcc, 50);
+        System.out.println(myDepositAccount.transferTo(myCardAcc, 50));
+        System.out.println(myCardAcc.transferTo(myDepositAccount, 150));
         System.out.println(myDepositAccount.getFund());
         System.out.println(myCardAcc.getFund());
 

@@ -2,12 +2,12 @@ import java.time.LocalDate;
 
 public class DepositAccount extends Account {
 
+    private LocalDate dateOfLastAdd;
+
     DepositAccount(double fund) {
         super(fund);
         setDateOfLastAdd(LocalDate.now());
     }
-
-    private LocalDate dateOfLastAdd;
 
     void setDateOfLastAdd(LocalDate dateOfLastAdd) {
         this.dateOfLastAdd = dateOfLastAdd;
@@ -35,13 +35,9 @@ public class DepositAccount extends Account {
         }
     }
 
-    boolean transferTo(Account account, double money) {
-        return super.transferTo(account, money);
-    }
-
     boolean wasMonthAgo() {
-//        LocalDate now = LocalDate.now();
-        LocalDate now = dateOfLastAdd.plusMonths(2); //If it still here, that mean I will check method in future
+        LocalDate now = LocalDate.now();
+//        LocalDate now = dateOfLastAdd.plusMonths(2); //If it still here, that mean I will check method in future
         LocalDate lastChange = dateOfLastAdd;
         return !now.minusMonths(1).isBefore(lastChange);
     }

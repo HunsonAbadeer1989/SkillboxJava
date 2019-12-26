@@ -7,13 +7,8 @@ public class CardAccount extends Account {
     }
 
     @Override
-    void addMoney(double cash) {
-        super.addMoney(cash);
-    }
-
-    @Override
     boolean withdrawMoney(double cash) {
-        cash = cashWithTax(cash);
+        cash = cash + cash * TAX;
         if (isCanWithdraw(cash)) {
             super.withdrawMoney(cash);
             return true;
@@ -24,16 +19,7 @@ public class CardAccount extends Account {
     }
 
     private boolean isCanWithdraw(double cash) {
-        return cash + cash * TAX <= getFund();
-    }
-
-    @Override
-    boolean transferTo(Account account, double money) {
-        return super.transferTo(account, money);
-    }
-
-    private double cashWithTax(double cash) {
-        return cash + cash * TAX;
+        return cash <= getFund();
     }
 }
 

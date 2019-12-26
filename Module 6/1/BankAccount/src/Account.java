@@ -8,10 +8,11 @@
 
 public abstract class Account
 {
+    protected double fund;
+
     Account(double fund){
         setFund(fund);
     }
-    protected double fund;
 
     protected double getFund() {
         return fund;
