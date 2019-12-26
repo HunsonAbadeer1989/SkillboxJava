@@ -1,44 +1,19 @@
-public class Person implements Client
+public class Person extends Client
 {
-    Person(double found){
-        this.found = found;
-    }
-
-    private double found;
-
-    public double getFound() {
-        return found;
-    }
-
-    public void setFound(double found) {
-        this.found = found;
+    public Person(double fund) {
+        super(fund);
     }
 
     @Override
-    public void addMoney(double money) {
-        if ( money < 0) {
+    public void withdrawMoney(double cash) {
+        if (cash < 0){
             System.out.println("Wrong amount!");
         }
-        else {
-            setFound(getFound() + money);
-        }
-    }
-
-    @Override
-    public void withdrawMoney(double money) {
-        if (money < 0){
-            System.out.println("Wrong amount!");
-        }
-        else if (money <= getFound()){
-            setFound(getFound() - money);
+        else if (cash <= getFund()){
+            super.withdrawMoney(cash);
         }
         else {
             System.out.println("You have not this amount of money!");
         }
-    }
-
-    @Override
-    public void balance() {
-        System.out.println(getFound());
     }
 }

@@ -7,9 +7,36 @@
  * у юридических лиц — снятие с комиссией 1%,
  * а у ИП — пополнение с комиссией 1%, если сумма меньше 1000 рублей,
  * и 0,5%, если сумма больше либо равна 1000 рублей. */
-public interface Client
+public abstract class Client
 {
-    void addMoney(double money);
-    void withdrawMoney(double money);
-    void balance();
+    private double fund;
+
+    public double getFund() {
+        return fund;
+    }
+
+    public void setFund(double fund) {
+        this.fund = fund;
+    }
+
+    public Client(double fund) {
+        this.fund = fund;
+    }
+
+    public void addMoney(double cash) {
+        if ( cash < 0) {
+            System.out.println("Wrong amount!");
+        }
+        else {
+            setFund(getFund() + cash);
+        }
+    }
+
+    void withdrawMoney(double cash){
+        setFund(getFund() - cash);
+    }
+
+    double balance(){
+        return getFund();
+    }
 }
