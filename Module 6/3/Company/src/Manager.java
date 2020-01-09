@@ -11,12 +11,8 @@ public class Manager extends Staff
         setSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
     }
 
-    public Manager(String name, double managerSalary, Company company) {
-        super(name, managerSalary, company);
-    }
-
     @Override
     public double getMonthSalary() {
-        return getSalary() + getCompanyIncome() * MANAGER_BONUS;
+        return getSalary() + getCompany().getIncome() * MANAGER_BONUS;
     }
 }

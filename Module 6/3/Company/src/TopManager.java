@@ -10,12 +10,8 @@ public class TopManager extends Staff
         setSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
     }
 
-    public TopManager(String name, double topManagerSalary, Company company) {
-        super(name, topManagerSalary, company);
-    }
-
     @Override
     public double getMonthSalary() {
-        return getCompanyIncome() < BONUS_PAY_BORDER ? getSalary() * TOP_MANAGER_BONUS : getSalary();
+        return getCompany().getIncome() < BONUS_PAY_BORDER ? getSalary() * TOP_MANAGER_BONUS : getSalary();
     }
 }
