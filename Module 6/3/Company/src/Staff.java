@@ -1,10 +1,21 @@
-import java.util.List;
 
-abstract class Staff extends Employee
+abstract class Staff
 {
     private String employeeName;
     private double salary;
     private static int count;
+
+    private Company company;
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    abstract double getMonthSalary();
 
     protected Staff(){
         this.employeeName = "Employee " + ++count;

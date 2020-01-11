@@ -5,7 +5,7 @@ public class Company {
 
     private String companyName;
     private double income;
-    private List<Employee> employeeList = new ArrayList<>();
+    private List<Staff> employeeList = new ArrayList<>();
 
     public Company(String name) {
         this.companyName = name;
@@ -21,7 +21,7 @@ public class Company {
 
     public void setIncome() {
         double income = 0.0;
-        for (Employee employee : employeeList) {
+        for (Staff employee : employeeList) {
             if (employee instanceof TopManager) {
                 income += employee.getMonthSalary();
             }
@@ -34,28 +34,6 @@ public class Company {
         employeeList.add(emp);
         setIncome();
         return true;
-    }
-
-    public boolean hire(EmployeeType type, Company company, int count){
-        switch(type){
-            case TOP_MANAGER_TYPE:
-                for(int i = 0; i < count; i++){
-                    hire(new TopManager(), company);
-                    setIncome();
-                }
-                return true;
-            case MANAGER_TYPE:
-                for(int i = 0; i < count; i++){
-                    hire(new Manager(), company);
-                }
-                return true;
-            case OPERATOR_TYPE:
-                for(int i = 0; i < count; i++){
-                    hire(new Operator(), company);
-                }
-                return true;
-            default: return false;
-        }
     }
 
     public void hireAll(int operators, int managers, int topManagers, Company company){
@@ -77,12 +55,13 @@ public class Company {
         int firePercent = size * percent /100;
         for(int i = 0; i < firePercent; i++) {
             employeeList.remove(employeeList.get(0));
+            setIncome();
         }
     }
 
-    public List<Employee> getTopSalaryStaff(int count){
+    public List<Staff> getTopSalaryStaff(int count){
         employeeList.sort(new SortByTopSalary());
-        ArrayList<Employee> topSalaryList = new ArrayList<>(employeeList);
+        ArrayList<Staff> topSalaryList = new ArrayList<>(employeeList);
         System.out.printf("Top highest salary of %d: \n", count);
         for(int i = 0; i < count; i++){
             System.out.println(topSalaryList.get(i));
@@ -90,9 +69,9 @@ public class Company {
         return topSalaryList;
     }
 
-    public List<Employee> getLowestSalaryStaff(int count){
-        employeeList.sort(new SortByLowestSalary());
-        ArrayList<Employee> lowSalaryList = new ArrayList<>(employeeList);
+    public List<Staff> getLowestSalaryStaff(int count){
+        employeeList.sort(new SortByTopSalary().reversed());
+        ArrayList<Staff> lowSalaryList = new ArrayList<>(employeeList);
         System.out.printf("Top lowest salary of %d: \n", count);
         for(int i = 0; i < count; i++){
             System.out.println(lowSalaryList.get(i));
