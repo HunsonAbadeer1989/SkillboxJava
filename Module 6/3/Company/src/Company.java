@@ -16,14 +16,15 @@ public class Company {
     }
 
     public double getIncome() {
+        calculateIncome();
         return this.income;
     }
 
-    public void setIncome() {
+    public void calculateIncome() {
         double income = 0.0;
         for (Staff employee : employeeList) {
-            if (employee instanceof TopManager) {
-                income += employee.getMonthSalary();
+            if (employee instanceof Manager) {
+                income += ((Manager) employee).getSalesAmount();
             }
         }
         this.income = income;
@@ -32,7 +33,6 @@ public class Company {
     public boolean hire(Staff emp, Company company){
         emp.setCompany(company);
         employeeList.add(emp);
-        setIncome();
         return true;
     }
 
@@ -45,8 +45,6 @@ public class Company {
         }
         for(int i = 0; i < topManagers; i++){
             hire(new TopManager(), company);
-            setIncome();
-
         }
     }
 
@@ -55,7 +53,6 @@ public class Company {
         int firePercent = size * percent /100;
         for(int i = 0; i < firePercent; i++) {
             employeeList.remove(employeeList.get(0));
-            setIncome();
         }
     }
 

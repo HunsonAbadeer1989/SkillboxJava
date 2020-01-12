@@ -6,11 +6,11 @@ public class TopManager extends Staff
     private static final double MAX_SALARY = 50_000.0;
 
     public TopManager() {
-        setSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
+        setFixedSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
     }
 
     @Override
     public double getMonthSalary() {
-        return getCompany().getIncome() < BONUS_PAY_BORDER ? getSalary() * TOP_MANAGER_BONUS : getSalary();
+        return getCompany().getIncome() < BONUS_PAY_BORDER ? getFixedSalary() * TOP_MANAGER_BONUS : getFixedSalary();
     }
 }

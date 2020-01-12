@@ -2,7 +2,7 @@
 abstract class Staff
 {
     private String employeeName;
-    private double salary;
+    private double fixedSalary;
     private static int count;
 
     private Company company;
@@ -23,19 +23,19 @@ abstract class Staff
 
     protected Staff(String name, double salary){
         this.employeeName = name;
-        this.salary = salary;
+        this.fixedSalary = salary;
     }
 
     public String getEmployeeName() {
         return employeeName;
     }
 
-    public double getSalary() {
-        return salary;
+    public double getFixedSalary() {
+        return fixedSalary;
     }
 
-    public void setSalary(double salary) {
-        this.salary = salary;
+    public void setFixedSalary(double fixedSalary) {
+        this.fixedSalary = fixedSalary;
     }
 
     @Override
