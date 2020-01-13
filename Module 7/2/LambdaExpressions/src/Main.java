@@ -1,13 +1,8 @@
-import org.w3c.dom.ls.LSOutput;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static java.sql.Date.valueOf;
 
@@ -22,8 +17,8 @@ public class Main
 
         // Homework 7.2
         staff.stream().
-                sorted(Comparator.comparing(Employee::getName)).
-                sorted(Comparator.comparing(Employee::getSalary)).
+                sorted(Comparator.comparingInt(Employee::getSalary).
+                thenComparing(Employee::getName)).
                 forEach( System.out::println);
 
         System.out.println();
