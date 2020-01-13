@@ -1,4 +1,3 @@
-
 public class Manager extends Staff
 {
     private static final double MANAGER_BONUS = 0.05;
@@ -8,7 +7,7 @@ public class Manager extends Staff
     private double salesAmount;
 
     public Manager() {
-        setFixedSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
+        super((Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY));
         setSalesAmount(Math.random() * MAX_SALES_PER_MONTH);
     }
 

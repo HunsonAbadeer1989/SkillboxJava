@@ -4,7 +4,6 @@ import java.util.List;
 public class Company {
 
     private String companyName;
-    private double income;
     private List<Staff> employeeList = new ArrayList<>();
 
     public Company(String name) {
@@ -16,18 +15,13 @@ public class Company {
     }
 
     public double getIncome() {
-        calculateIncome();
-        return this.income;
-    }
-
-    public void calculateIncome() {
         double income = 0.0;
         for (Staff employee : employeeList) {
             if (employee instanceof Manager) {
                 income += ((Manager) employee).getSalesAmount();
             }
         }
-        this.income = income;
+        return income;
     }
 
     public boolean hire(Staff emp, Company company){

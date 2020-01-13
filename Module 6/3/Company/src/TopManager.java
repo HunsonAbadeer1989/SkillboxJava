@@ -6,7 +6,7 @@ public class TopManager extends Staff
     private static final double MAX_SALARY = 50_000.0;
 
     public TopManager() {
-        setFixedSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
+        super((Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY));
     }
 
     @Override

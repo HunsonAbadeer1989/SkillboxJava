@@ -17,13 +17,9 @@ abstract class Staff
 
     abstract double getMonthSalary();
 
-    protected Staff(){
+    protected Staff(double fixedSalary){
         this.employeeName = "Employee " + ++count;
-    }
-
-    protected Staff(String name, double salary){
-        this.employeeName = name;
-        this.fixedSalary = salary;
+        this.fixedSalary = fixedSalary;
     }
 
     public String getEmployeeName() {
@@ -32,10 +28,6 @@ abstract class Staff
 
     public double getFixedSalary() {
         return fixedSalary;
-    }
-
-    public void setFixedSalary(double fixedSalary) {
-        this.fixedSalary = fixedSalary;
     }
 
     @Override

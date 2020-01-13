@@ -4,7 +4,7 @@ public class Operator extends Staff
     private static final double MAX_SALARY = 10_000.0;
 
     protected Operator(){
-        setFixedSalary(Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY);
+        super((Math.random() * (MAX_SALARY - MIN_SALARY) + MIN_SALARY));
     }
 
     @Override
