@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RouteCalculatorTest extends TestCase {
     Line line1, line2, line3;
@@ -76,74 +78,64 @@ public class RouteCalculatorTest extends TestCase {
 
     @Test
     public void test_distance_to_same_station() {
-        List<Station> actualStations = routeCalc.getShortestRoute(station2, station2);
-        List<Station> expectedStations = new ArrayList<Station>(){{
-            add(station2);
-        }};
+        List<Station> actualStations = routeCalc.getShortestRoute(stationIndex.getStation("Мятная"),
+                stationIndex.getStation("Смузная"));
+        List<Station> expectedStations = buildRoute("Мятная -> Чайная -> Смузная");
         assertEquals(expectedStations, actualStations);
     }
 
     @Test
     public void test_stations_next_to_each_other_on_single_line() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<Station> actualStations = routeCalc.getShortestRoute(station2, station5);
-        List<Station> expectedStations = new ArrayList<Station>(){{
-            add(station2);
-            add(station3);
-            add(station4);
-            add(station5);
-        }};
+        List<Station> actualStations = routeCalc.getShortestRoute(stationIndex.getStation("Чайная"),
+                stationIndex.getStation("Сахарная"));
+        List<Station> expectedStations = buildRoute("Чайная -> Смузная -> Кофейная -> Сахарная");
         assertEquals(expectedStations, actualStations);
     }
 
     @Test
     public void test_opposite_station_on_single_line(){
-        List<Station> actualStations = routeCalc.getShortestRoute(station1, station13);
-        List<Station> expectedStations = new ArrayList<Station>(){{
-            add(station1);
-            add(station2);
-            add(station3);
-            add(station13);
-        }};
+        List<Station> actualStations = routeCalc.getShortestRoute(stationIndex.getStation("Мятная"),
+                stationIndex.getStation("Шипучая"));
+        List<Station> expectedStations = buildRoute("Мятная -> Чайная -> Смузная -> Шипучая");
         assertEquals(expectedStations, actualStations);
     }
 
     @Test
     public void test_opposite_station_wit_one_transfer(){
-        List<Station> actualStations = routeCalc.getShortestRoute(station11, station12);
-        List<Station> expectedStations = new ArrayList<Station>(){{
-            add(station11);
-            add(station10);
-            add(station9);
-            add(station8);
-            add(station7);
-            add(station15);
-            add(station14);
-            add(station13);
-            add(station12);
-        }};
+        List<Station> actualStations = routeCalc.getShortestRoute(stationIndex.getStation("Мятная"),
+                stationIndex.getStation("Лимонадная"));
+        List<Station> expectedStations = buildRoute("Мятная -> Чайная -> Смузная -> Шипучая -> Лимонадная");
         assertEquals(expectedStations, actualStations);
     }
 
     @Test
     public void test_opposite_station_wit_two_transfers(){
-        List<Station> actualStations = routeCalc.getShortestRoute(station11, station5);
-        List<Station> expectedStations = new ArrayList<Station>(){{
-            add(station11);
-            add(station10);
-            add(station9);
-            add(station8);
-            add(station7);
-            add(station15);
-            add(station14);
-            add(station13);
-            add(station3);
-            add(station4);
-            add(station5);
-        }};
+        List<Station> actualStations = routeCalc.getShortestRoute(stationIndex.getStation("Мятная"),
+                stationIndex.getStation("Карамельная"));
+        List<Station> expectedStations = buildRoute("Мятная -> Чайная -> Смузная -> Шипучая -> Лимонадная -> "
+        + "  Мутная -> Сиропная -> Помадная -> Карамельная");
         assertEquals(expectedStations, actualStations);
     }
 
+    @Test
+    public void test_calc_duration_with_two_transfers_22(){
+        double actualTime = RouteCalculator.calculateDuration(buildRoute("Мятная -> Чайная -> Смузная -> Шипучая -> Лимонадная -> "
+                + "  Мутная -> Сиропная -> Помадная -> Карамельная"));
+        double expectedTime = 22.0;
+        assertEquals(expectedTime, actualTime);
+
+
+
+
+    }
     @Override
     protected void tearDown() throws Exception {
+    }
+
+    private List<Station> buildRoute(String str){
+        String[] stations = str.split(" -+> ");
+        return Arrays.stream(stations)
+                .map(s -> stationIndex.getStation(s.trim()))
+                .collect(Collectors.toList());
     }
 }

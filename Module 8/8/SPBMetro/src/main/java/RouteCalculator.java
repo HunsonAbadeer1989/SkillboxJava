@@ -116,7 +116,9 @@ public class RouteCalculator
         if(connect) {
             return route;
         }
-        else return null;
+        else {
+            return null;
+        }
     }
 
     private boolean isConnected(Station station1, Station station2)
