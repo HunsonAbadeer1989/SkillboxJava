@@ -88,9 +88,6 @@ public class RouteCalculator
 
     private List<Station> getRouteWithOneConnection(Station from, Station to)
     {
-        if(from.getLine().equals(to.getLine())) {
-            return null;
-        }
         boolean connect = false;
         ArrayList<Station> route = new ArrayList<>();
         List<Station> fromLineStations = from.getLine().getStations();
@@ -138,6 +135,7 @@ public class RouteCalculator
                 if(srcStation.getLine().equals(dstStation.getLine())) {
                     return getRouteOnTheLine(srcStation, dstStation);
                 }
+                continue;
             }
         }
         return null;
@@ -145,10 +143,6 @@ public class RouteCalculator
 
     private List<Station> getRouteWithTwoConnections(Station from, Station to)
     {
-        if (from.getLine().equals(to.getLine())) {
-            return null;
-        }
-
         ArrayList<Station> route = new ArrayList<>();
 
         List<Station> fromLineStations = from.getLine().getStations();
