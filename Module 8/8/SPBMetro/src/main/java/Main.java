@@ -22,22 +22,26 @@ public class Main
 
     public static void main(String[] args)
     {
-        logger = LogManager.getLogger(Main.class.getName());
         RouteCalculator calculator = getRouteCalculator();
+        logger = LogManager.getLogger(Main.class.getName());
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
         scanner = new Scanner(System.in);
-        for(;;)
-        {
-            Station from = takeStation("Введите станцию отправления:");
-            Station to = takeStation("Введите станцию назначения:");
+        try {
+            for (; ; ) {
+                Station from = takeStation("Введите станцию отправления:");
+                Station to = takeStation("Введите станцию назначения:");
 
-            List<Station> route = calculator.getShortestRoute(from, to);
-            System.out.println("Маршрут:");
-            printRoute(route);
+                List<Station> route = calculator.getShortestRoute(from, to);
+                System.out.println("Маршрут:");
+                printRoute(route);
 
-            System.out.println("Длительность: " +
-                RouteCalculator.calculateDuration(route) + " минут");
+                System.out.println("Длительность: " +
+                        RouteCalculator.calculateDuration(route) + " минут");
+            }
+        }
+        catch (Exception ex){
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -78,7 +82,7 @@ public class Main
                 logger.info("User was search: " + station.getName());
                 return station;
             }
-            logger.error("Station not found " + line);
+            logger.warn("Station not found " + line);
             System.out.println("Станция не найдена :(");
         }
     }
