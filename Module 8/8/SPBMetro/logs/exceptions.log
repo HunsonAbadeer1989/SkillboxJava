@@ -1,0 +1,12 @@
+2020-02-02 11:42:09.996 [main] ERROR ErrorLog - null
+java.lang.NullPointerException: null
+	at java.util.TreeMap.put(TreeMap.java:561) ~[?:?]
+	at java.util.TreeSet.add(TreeSet.java:255) ~[?:?]
+	at StationIndex.addStation(StationIndex.java:22) ~[classes/:?]
+	at Main.main(Main.java:41) [classes/:?]
+2020-02-02 11:42:45.114 [main] ERROR ErrorLog - null
+java.lang.NullPointerException: null
+	at java.util.TreeMap.put(TreeMap.java:561) ~[?:?]
+	at java.util.TreeSet.add(TreeSet.java:255) ~[?:?]
+	at StationIndex.addStation(StationIndex.java:22) ~[classes/:?]
+	at Main.main(Main.java:41) [classes/:?]

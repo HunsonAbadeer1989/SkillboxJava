@@ -2,6 +2,8 @@ import core.Line;
 import core.Station;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,16 +16,22 @@ import java.util.Scanner;
 
 public class Main
 {
-    private static Logger logger;
+    private static Logger loggerInfo;
+    private static Logger loggerWarn;
+    private static Logger loggerError;
     private static String dataFile = "src/main/resources/map.json";
     private static Scanner scanner;
+    private static Marker CORRECT_STATION = MarkerManager.getMarker("INPUT_CORRECT");
+    private static Marker WRONG_STATION = MarkerManager.getMarker("WRONG_INPUT");
 
     private static StationIndex stationIndex;
 
     public static void main(String[] args)
     {
         RouteCalculator calculator = getRouteCalculator();
-        logger = LogManager.getLogger(Main.class.getName());
+        loggerInfo = LogManager.getLogger("InfoLog");
+        loggerWarn = LogManager.getLogger("WarnLog");
+        loggerError = LogManager.getLogger("ErrorLog");
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
         scanner = new Scanner(System.in);
@@ -41,7 +49,7 @@ public class Main
             }
         }
         catch (Exception ex){
-            logger.error(ex.getMessage(), ex);
+            loggerError.error(ex.getMessage(), ex);
         }
     }
 
@@ -79,10 +87,10 @@ public class Main
             String line = scanner.nextLine().trim();
             Station station = stationIndex.getStation(line);
             if(station != null) {
-                logger.info("User was search: " + station.getName());
+                loggerInfo.info(CORRECT_STATION, "User was search: " + station.getName());
                 return station;
             }
-            logger.warn("Station not found " + line);
+            loggerWarn.warn(WRONG_STATION,"Station not found " + line);
             System.out.println("Станция не найдена :(");
         }
     }
