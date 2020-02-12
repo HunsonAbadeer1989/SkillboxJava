@@ -7,7 +7,6 @@ public class SpendNote {
     public SpendNote(String spendCase, double money) {
         this.spendCase = spendCase;
         this.money = money;
-        count = getCount() + money;
     }
 
     public static double getCount() {

@@ -2,26 +2,25 @@ public class ProfitNote {
 
     private static double count;
 
-    private String spendSource;
+    private String spendCase;
     private double money;
 
 
     public ProfitNote(String spendSource, double money) {
-        this.spendSource = spendSource;
+        this.spendCase = spendSource;
         this.money = money;
-        count = getCount() + money;
     }
 
     public static double getCount() {
         return count;
     }
 
-    public String getSpendSource() {
-        return spendSource;
+    public String getSpendCase() {
+        return spendCase;
     }
 
-    public void setSpendSource(String spendSource) {
-        this.spendSource = spendSource;
+    public void setSpendCase(String spendCase) {
+        this.spendCase = spendCase;
     }
 
     public double getMoney() {
