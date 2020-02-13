@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,8 +18,7 @@ public class LentaImage {
 
         Document document = Jsoup
                 .connect(strURL)
-                .userAgent("Safary/13.0.5")
-                .timeout(10 * 1000)
+                .maxBodySize(0)
                 .get();
 
         Elements imageElements = document.select("img");
@@ -53,7 +51,12 @@ public class LentaImage {
                 os.write(buffer, 0, n);
             }
 
-            os.close();
+            try {
+                os.close();
+            }
+            catch (Exception e){
+                e.getStackTrace();
+            }
 
             System.out.println("Image saved");
 
@@ -62,4 +65,3 @@ public class LentaImage {
         }
     }
 }
-
