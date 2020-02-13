@@ -37,9 +37,7 @@ public class LentaImage {
 
         System.out.println("Saving: " + strImageName + ", from: " + strImageURL);
 
-        try {
-            URL urlImage = new URL(strImageURL);
-            InputStream in = urlImage.openStream();
+        try (InputStream in = new URL(strImageURL).openStream() ) {
 
             byte[] buffer = new byte[4096];
             int n = -1;
@@ -50,14 +48,7 @@ public class LentaImage {
             while ((n = in.read(buffer)) != -1) {
                 os.write(buffer, 0, n);
             }
-
-            try {
                 os.close();
-            }
-            catch (Exception e){
-                e.getStackTrace();
-            }
-
             System.out.println("Image saved");
 
         } catch (IOException e) {
