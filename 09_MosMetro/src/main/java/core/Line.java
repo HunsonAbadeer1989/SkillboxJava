@@ -1,22 +1,21 @@
 package core;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Line implements Comparable<Line>
 {
-    private int number;
+    private String number;
     private String name;
-    private List<Station> stations;
+    private transient List<Station> stations;
 
-    public Line(int number, String name)
+    public Line(String number, String name)
     {
         this.number = number;
         this.name = name;
         stations = new ArrayList<>();
     }
 
-    public int getNumber()
+    public String getNumber()
     {
         return number;
     }
@@ -31,6 +30,11 @@ public class Line implements Comparable<Line>
         stations.add(station);
     }
 
+    public void addStations(List<Station> stationsList)
+    {
+        stations.addAll(stationsList);
+    }
+
     public List<Station> getStations()
     {
         return stations;
@@ -39,7 +43,7 @@ public class Line implements Comparable<Line>
     @Override
     public int compareTo(Line line)
     {
-        return Integer.compare(number, line.getNumber());
+        return number.compareTo(line.getNumber());
     }
 
     @Override
@@ -48,4 +52,11 @@ public class Line implements Comparable<Line>
         return compareTo((Line) obj) == 0;
     }
 
+    @Override
+    public String toString() {
+        return number +
+                ", " + name + '\'' +
+                ", stations=" + stations +
+                '}';
+    }
 }
