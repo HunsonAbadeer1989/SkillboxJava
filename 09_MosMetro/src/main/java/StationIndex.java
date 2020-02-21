@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 public class StationIndex
 {
     HashMap<String, Line> lines;
-    TreeSet<Station> stations;
-    transient TreeMap<Station, TreeSet<Station>> connections;
+    List<Station> stations;
+    TreeMap<Station, TreeSet<Station>> connections;
 
     public StationIndex(String name)
     {
         lines = new HashMap<>();
-        stations = new TreeSet<>();
+        stations = new ArrayList<>();
         connections = new TreeMap<>();
     }
 
@@ -56,13 +56,6 @@ public class StationIndex
         return null;
     }
 
-    public Station getStation(String name, String lineNumber)
-    {
-        Station query = new Station(name, getLine(lineNumber));
-        Station station = stations.ceiling(query);
-        return station.equals(query) ? station : null;
-    }
-
     public Set<Station> getConnectedStations(Station station)
     {
         if(connections.containsKey(station)) {
@@ -75,7 +68,7 @@ public class StationIndex
         return lines;
     }
 
-    public TreeSet<Station> getStations() {
+    public List<Station> getStations() {
         return stations;
     }
 }
