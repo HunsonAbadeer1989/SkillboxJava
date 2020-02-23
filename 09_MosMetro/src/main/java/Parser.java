@@ -19,6 +19,7 @@ public class Parser {
 
     public static StationIndex mosMetro;
     private static StationsIndexes stationIndex;
+    private static List<List<Station>> connectionList = new ArrayList<>();
 
     private static Elements getRows() throws IOException {
         String url = "https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_" +
@@ -40,13 +41,6 @@ public class Parser {
         deserializeJsonToStationIndex(); // достанем инфу из созданного документа
 
         resultOfHomework(); // вывод необходимой инфы в консоль
-
-        mosMetro.connections.forEach((station, stations) -> {
-            if (!stations.isEmpty()) {
-                System.out.print(station);
-                System.out.println(stations);
-            }
-        });
     }
 
     private static void parseLinesAndStations(Elements elements) {
@@ -54,7 +48,6 @@ public class Parser {
         elements.remove(0);
         try {
             for (Element row : elements) {
-//                Element lineCell = row.select("td").first();
                 Elements lineCell = row.select("td");
                 if (lineCell.size() == 7 || lineCell.size() == 8) {
                     String lineNumber = lineCell.select("span.sortkey").first().text(); // LINE NUMBER
@@ -94,27 +87,32 @@ public class Parser {
             for (Element row : elements) {
                 Elements cells = row.select("td");
                 List<Station> tempConnection = new ArrayList<>();
-
                 if (cells.size() == 7 || cells.size() == 8) {
-                    final String stationName = cells.get(1).select("a").text(); // STATION NAME
+                    final String stationName = cells.get(1).select("a").first().text(); // STATION NAME
+                    final String stationLineNumber = row.select("span.sortkey").first().text(); // Line Number
                     Elements connectElements = cells.get(3).select("span");
                     for (Element connectElement : connectElements) {
 
                         String connectStationNumber = connectElement.select("span[class=sortkey]").text();
-                        String tempConnectStationName = connectElement
-                                .select("span:has(a)").attr("title");
-
-                        //                        String tempConnectStationName = connectElement.nextSibling().attr("title");
+                        Element tempStationNameElement = connectElement.nextElementSibling();
+                        if(tempStationNameElement == null){
+                            continue;
+                        }
+                        String tempConnectStationName = tempStationNameElement.attr("title");
+                        if (tempConnectStationName == null) {
+                            continue;
+                        }
                         String connectStationName = getConnectionStationName(tempConnectStationName);
                         if (connectStationName.equals("")) {
                             continue;
                         }
+//                        System.out.println(mosMetro.getStation(stationName).getLine().getNumber() + " " + stationName + " " + connectStationNumber + " " + connectStationName);
+                        tempConnection.add(mosMetro.getStation(stationName));
                         tempConnection.add(mosMetro.getStation(connectStationName));
-                        //                    System.out.println(connectStationName + " " + connectStationNumber);
+                        connectionList.add(tempConnection);
                     }
-
+                    mosMetro.addConnection(tempConnection);
                 }
-                mosMetro.addConnection(tempConnection);
             }
         } catch (
                 Exception ex) {
@@ -123,18 +121,6 @@ public class Parser {
 
     }
 
-    private static Station findStationByConnectionString(String line, String connectionRawString) {
-        List<Station> found = mosMetro.getStations().stream()
-                .filter(s -> s.getLine().getNumber().equals(line))     // filter by line
-                .filter(s -> connectionRawString.matches(s.getName())) // filter by name
-                .collect(Collectors.toList());
-        if (found.size() == 0) {
-            System.out.printf("No station matches for line='%s' and station='%s'%n", line, connectionRawString);
-        } else if (found.size() > 1) {
-            System.out.printf("Multiply stations found for line='%s' station='%s'%n", line, connectionRawString);
-        }
-        return found.iterator().next();
-    }
 
     private static String getConnectionStationName(String tempConnectStationName) {
         for (Station metStation : mosMetro.getStations()) {
@@ -175,8 +161,9 @@ public class Parser {
                 }
             }
         }
-
-        StationsIndexes jsonStationIndexes = new StationsIndexes(lines, stations);
+//        Map<Station, List<Station>> connections = new TreeMap<>(connectionMap);
+        List<List<Station>> connections = new ArrayList<>(connectionList);
+        StationsIndexes jsonStationIndexes = new StationsIndexes(lines, stations, connections);
         return gson.toJson(jsonStationIndexes);
     }
 
@@ -188,6 +175,12 @@ public class Parser {
         public StationsIndexes(List<Line> lines, HashMap<String, List<Station>> stations) {
             this.lines = lines;
             this.stations = stations;
+        }
+
+        public StationsIndexes(List<Line> lines, HashMap<String, List<Station>> stations, List<List<Station>> connections) {
+            this.lines = lines;
+            this.stations = stations;
+            this.connections = connections;
         }
 
         public List<List<Station>> getConnections() {
@@ -234,6 +227,5 @@ public class Parser {
             ex.getStackTrace();
         }
     }
-
 
 }
