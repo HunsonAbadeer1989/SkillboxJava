@@ -9,6 +9,7 @@ public class StationIndex
     HashMap<String, Line> lines;
     List<Station> stations;
     TreeMap<Station, TreeSet<Station>> connections;
+    private List<List<Parser.SimpleConnection>> simpleConnections;
 
     public StationIndex(String name)
     {
@@ -70,5 +71,16 @@ public class StationIndex
 
     public List<Station> getStations() {
         return stations;
+    }
+
+    public void createSimpleConnections() {
+        simpleConnections = new ArrayList<>();
+        connections.values().forEach(set -> set.forEach(station -> {
+                    List<Parser.SimpleConnection> connectedStations = new ArrayList<>();
+                    connectedStations.add(new Parser.SimpleConnection(station));
+                    connections.get(station).forEach(station1 -> connectedStations.add(new Parser.SimpleConnection(station1)));
+                    simpleConnections.add(connectedStations);
+                }
+        ));
     }
 }

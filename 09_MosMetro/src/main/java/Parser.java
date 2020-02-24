@@ -20,6 +20,7 @@ public class Parser {
     public static StationIndex mosMetro;
     private static StationsIndexes stationIndex;
     private static List<List<Station>> connectionList = new ArrayList<>();
+    private static List<List<SimpleConnection>> simpleConnectionList = new ArrayList<>();
 
     private static Elements getRows() throws IOException {
         String url = "https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_" +
@@ -41,6 +42,9 @@ public class Parser {
         deserializeJsonToStationIndex(); // достанем инфу из созданного документа
 
         resultOfHomework(); // вывод необходимой инфы в консоль
+
+        mosMetro.createSimpleConnections();
+
     }
 
     private static void parseLinesAndStations(Elements elements) {
@@ -87,6 +91,7 @@ public class Parser {
             for (Element row : elements) {
                 Elements cells = row.select("td");
                 List<Station> tempConnection = new ArrayList<>();
+                List<SimpleConnection> simpletempConnection = new ArrayList<>();
                 if (cells.size() == 7 || cells.size() == 8) {
                     final String stationName = cells.get(1).select("a").first().text(); // STATION NAME
                     final String stationLineNumber = row.select("span.sortkey").first().text(); // Line Number
@@ -106,10 +111,23 @@ public class Parser {
                         if (connectStationName.equals("")) {
                             continue;
                         }
-//                        System.out.println(mosMetro.getStation(stationName).getLine().getNumber() + " " + stationName + " " + connectStationNumber + " " + connectStationName);
-                        tempConnection.add(mosMetro.getStation(stationName));
-                        tempConnection.add(mosMetro.getStation(connectStationName));
-                        connectionList.add(tempConnection);
+
+//                        if(tempConnection.contains(mosMetro.getStation(stationName))){
+//                            tempConnection.add(mosMetro.getStation(connectStationName));
+//                            continue;
+//                        }
+
+                        if(simpletempConnection.contains(new SimpleConnection(mosMetro.getStation(stationName)))){
+                            simpletempConnection.add(new SimpleConnection(mosMetro.getStation(connectStationName)));
+                            continue;
+                        }
+                        simpletempConnection.add(new SimpleConnection(mosMetro.getStation(stationName)));
+                        simpletempConnection.add(new SimpleConnection(mosMetro.getStation(connectStationName)));
+
+//                        tempConnection.add(mosMetro.getStation(stationName));
+//                        tempConnection.add(mosMetro.getStation(connectStationName));
+//                        connectionList.add(tempConnection);
+                        simpleConnectionList.add(simpletempConnection);
                     }
                     mosMetro.addConnection(tempConnection);
                 }
@@ -120,7 +138,6 @@ public class Parser {
         }
 
     }
-
 
     private static String getConnectionStationName(String tempConnectStationName) {
         for (Station metStation : mosMetro.getStations()) {
@@ -161,8 +178,7 @@ public class Parser {
                 }
             }
         }
-//        Map<Station, List<Station>> connections = new TreeMap<>(connectionMap);
-        List<List<Station>> connections = new ArrayList<>(connectionList);
+        List<List<SimpleConnection>> connections = new ArrayList<>(simpleConnectionList);
         StationsIndexes jsonStationIndexes = new StationsIndexes(lines, stations, connections);
         return gson.toJson(jsonStationIndexes);
     }
@@ -170,20 +186,20 @@ public class Parser {
     private static class StationsIndexes {
         List<Line> lines;
         HashMap<String, List<Station>> stations;
-        List<List<Station>> connections;
+        List<List<SimpleConnection>> connections;
 
         public StationsIndexes(List<Line> lines, HashMap<String, List<Station>> stations) {
             this.lines = lines;
             this.stations = stations;
         }
 
-        public StationsIndexes(List<Line> lines, HashMap<String, List<Station>> stations, List<List<Station>> connections) {
+        public StationsIndexes(List<Line> lines, HashMap<String, List<Station>> stations, List<List<SimpleConnection>> connections) {
             this.lines = lines;
             this.stations = stations;
             this.connections = connections;
         }
 
-        public List<List<Station>> getConnections() {
+        public List<List<SimpleConnection>> getConnections() {
             return connections;
         }
 
@@ -228,4 +244,21 @@ public class Parser {
         }
     }
 
+    public static class SimpleConnection {
+        private String line;
+        private String station;
+
+        public SimpleConnection(Station station) {
+            this.line = station.getLine().getNumber();
+            this.station = station.getName();
+        }
+
+        public String getLine() {
+            return line;
+        }
+
+        public String getStation() {
+            return station;
+        }
+    }
 }
