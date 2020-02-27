@@ -25,7 +25,7 @@ public class TextChanger
                 "\n" +
                 "On the morning of 24 June 2016, he woke to find that while Scotland had voted heavily to Remain, his side - Leave - had narrowly won across the UK as whole. He assumed the politicians at Westminster would do as they had been instructed and make Brexit happen. But as the years went on and they failed to do so, he grew increasingly frustrated. \n" +
                 "\n" +
-                "“For me, I just think everyone now wants it done,” he says. He’d rather Brexit was completed before another independence referendum. “You need to take care of Brexit first, understand where it’s going to lead to.“ " ;
+                "“For me, I just think everyone now wants it done,” he says. He’d rather Brexit was completed before another independence referendum. “You need to take care of Brexit first, understand where it’s going to lead - to.“ " ;
 
         String[] newText = text.replaceAll("\\W[\\W, \\s]\\W*", " ").split(" ");
 
