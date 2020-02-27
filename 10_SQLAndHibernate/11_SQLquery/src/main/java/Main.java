@@ -5,33 +5,36 @@ import java.sql.Statement;
 
 public class Main {
     public static void main(String[] args) {
+
         String url = "jdbc:mysql://localhost:3306/skillbox?" +
                 "useUnicode=true&serverTimezone=Europe/Moscow&characterEncoding=UTF-8";
         String user = "root";
         String password = "testtest";
-        try {
 
-            Connection connection = DriverManager.getConnection(url, user, password);
+        try (Connection connection = DriverManager.getConnection(url, user, password);
+             Statement statement = connection.createStatement()) {
 
-            Statement statement = connection.createStatement();
+            String SQLstr = "SELECT c.name AS 'Course name'," +
+                    "COUNT(sub.subscription_date)/12 AS 'AVG buy course per month'  " +
+                    "FROM Courses c " +
+                    "JOIN Subscriptions sub ON c.id=sub.course_id " +
+                    "GROUP BY c.name  " +
+                    "ORDER BY c.name";
 
-            ResultSet resultSet =
-                    statement.executeQuery("SELECT c.name AS 'Название курса'," +
-                            "COUNT(sub.subscription_date)/12 AS 'Среднее количество покупок в месяц'  " +
-                            "FROM Courses c " +
-                            "JOIN Subscriptions sub ON c.id=sub.course_id " +
-                            "GROUP BY c.name  " +
-                            "ORDER BY c.name");
-            System.out.println("Название курса\t\tСреднее количество покупок в месяц");
-            while(resultSet.next()){
-                String nameString = resultSet.getString("Название курса");
-                String monthSubString = resultSet.getString("Среднее количество покупок в месяц");
-                System.out.printf("%s \t-\t %s\n", nameString, monthSubString);
+            try {
+                ResultSet resultSet =
+                        statement.executeQuery(SQLstr);
+                System.out.println("Название курса\t\tСреднее количество покупок в месяц");
+
+                while (resultSet.next()) {
+                    String nameString = resultSet.getString("Course name");
+                    String monthSubString = resultSet.getString("AVG buy course per month");
+                    System.out.printf("%s \t-\t %s\n", nameString, monthSubString);
+                }
             }
-
-            resultSet.close();
-            statement.close();
-            connection.close();
+            catch (Exception e){
+                e.getStackTrace();
+            }
         }
         catch(Exception ex){
             ex.getStackTrace();
