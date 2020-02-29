@@ -6,8 +6,7 @@ import java.sql.Statement;
 public class Main {
     public static void main(String[] args) {
 
-        String url = "jdbc:mysql://localhost:3306/skillbox?" +
-                "useUnicode=true&serverTimezone=Europe/Moscow&characterEncoding=UTF-8";
+        String url = "jdbc:mysql://localhost:3306/skillbox?useUnicode=true&serverTimezone=Europe/Moscow&characterEncoding=UTF-8";
         String user = "root";
         String password = "testtest";
 
@@ -21,7 +20,6 @@ public class Main {
                     "GROUP BY c.name  " +
                     "ORDER BY c.name";
 
-            try {
                 ResultSet resultSet =
                         statement.executeQuery(SQLstr);
                 System.out.println("Название курса\t\tСреднее количество покупок в месяц");
@@ -31,10 +29,6 @@ public class Main {
                     String monthSubString = resultSet.getString("AVG buy course per month");
                     System.out.printf("%s \t-\t %s\n", nameString, monthSubString);
                 }
-            }
-            catch (Exception e){
-                e.getStackTrace();
-            }
         }
         catch(Exception ex){
             ex.getStackTrace();
