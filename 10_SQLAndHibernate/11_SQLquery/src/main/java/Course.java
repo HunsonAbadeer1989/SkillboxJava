@@ -115,4 +115,12 @@ public class Course
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", description='" + description;
+    }
 }

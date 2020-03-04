@@ -19,11 +19,14 @@ public class Loader
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
 
-        Course course = session.get(Course.class, 1);
-        List<Student> studentList = course.getStudents();
-        studentList.forEach(student -> {
-            System.out.println(student.getName() + " " + student.getRegistrationDate());
-        });
+//        Course course = session.get(Course.class, 1);
+//        List<Student> studentList = course.getStudents();
+//        studentList.forEach(student -> {
+//            System.out.println(student.getName() + " " + student.getRegistrationDate());
+//        });
+
+        Teacher teacher = session.get(Teacher.class, 4);
+        System.out.println(teacher.getCourse());
 
         transaction.commit();
         sessionFactory.close();
