@@ -6,8 +6,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-import java.util.List;
-
 public class Loader
 {
     public static void main(String[] args) {
@@ -25,8 +23,8 @@ public class Loader
 //            System.out.println(student.getName() + " " + student.getRegistrationDate());
 //        });
 
-        Teacher teacher = session.get(Teacher.class, 4);
-        System.out.println(teacher.getCourse());
+        Teacher teacher = session.get(Teacher.class, 1);
+        System.out.println(teacher.getCourses());
 
         transaction.commit();
         sessionFactory.close();

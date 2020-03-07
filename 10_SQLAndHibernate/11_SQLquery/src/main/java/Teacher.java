@@ -13,17 +13,8 @@ public class Teacher
     private int salary;
     private int age;
 
-//    @OneToMany( cascade = CascadeType.ALL)
-//    @JoinTable(name = "Courses",
-//            joinColumns = {@JoinColumn(name = "teacher_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "id")})
-//    private Course courses;
-
-    @OneToOne( cascade = CascadeType.ALL)
-    @JoinTable(name = "Courses",
-            joinColumns = {@JoinColumn(name = "teacher_id")},
-            inverseJoinColumns = {@JoinColumn(name = "id")})
-    private Course course;
+    @OneToMany(mappedBy = "teacher")
+    private List<Course> courses;
 
     public int getId() {
         return id;
@@ -57,12 +48,12 @@ public class Teacher
         this.age = age;
     }
 
-    public Course getCourse() {
-        return course;
+    public List<Course> getCourses() {
+        return courses;
     }
 
-    public void setCourse(Course courses) {
-        this.course = courses;
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     @Override

@@ -19,8 +19,11 @@ public class Course
 
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(optional=false, cascade=CascadeType.ALL)
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "course", fetch=FetchType.EAGER)
+    private List<Subscriptions> subscriptions;
 
     @Column(name = "students_count")
     private int studentsCount;
@@ -35,6 +38,7 @@ public class Course
         joinColumns = {@JoinColumn(name = "course_id")},
             inverseJoinColumns = {@JoinColumn(name = "student_id")})
     private List<Student> students;
+
 
     public int getId() {
         return id;
@@ -114,6 +118,14 @@ public class Course
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public List<Subscriptions> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Subscriptions> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     @Override

@@ -1,4 +1,3 @@
-import javax.annotation.processing.Generated;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ public class Student
     private int id;
     private String name;
     private int age;
+
     @Column(name="registration_date")
     private Date registrationDate;
 
@@ -20,6 +20,9 @@ public class Student
             joinColumns = {@JoinColumn(name = "student_id")},
             inverseJoinColumns = {@JoinColumn(name = "course_id")})
     private List<Course> courses;
+
+    @OneToMany(mappedBy = "student", fetch=FetchType.EAGER)
+    private List<Subscriptions> subscriptions;
 
     public int getId() {
         return id;
@@ -59,6 +62,14 @@ public class Student
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public List<Subscriptions> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Subscriptions> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     @Override
