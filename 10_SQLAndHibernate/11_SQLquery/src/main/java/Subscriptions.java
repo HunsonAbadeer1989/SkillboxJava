@@ -7,12 +7,6 @@ import java.util.Date;
 @Table(name = "Subscriptions")
 public class Subscriptions implements Serializable
 {
-    //    @AttributeOverrides({
-//            @AttributeOverride(name = "studentId",
-//                    column = @Column(name="student_id")),
-//            @AttributeOverride(name = "courseId",
-//                    column = @Column(name="course_id"))
-//    })
     @Id
     @Column(name = "student_id")
     private int studentId;
