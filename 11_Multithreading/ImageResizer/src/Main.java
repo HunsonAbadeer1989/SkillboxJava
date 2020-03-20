@@ -3,7 +3,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main {
-
+    private static final int COUNT_OF_PROCESSORS = 8;
     public static void main(String[] args) {
         String srcFolder = "/users/hunsonabadeer/Desktop/src";
         String dstFolder = "/users/hunsonabadeer/Desktop/dst";
@@ -14,9 +14,11 @@ public class Main {
 
         File[] files = srcDir.listFiles();
 
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(COUNT_OF_PROCESSORS);
 
-        executor.execute(new ImageResizer(files, dstFolder, start));
+        if (files != null) {
+            for (File file : files) executor.execute(new ImageResizer(file, dstFolder, start));
+        }
 
         executor.shutdown();
 
