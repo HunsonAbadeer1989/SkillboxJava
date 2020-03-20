@@ -1,7 +1,8 @@
 import java.io.File;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main {
-    private static final int COUNT_OF_PROCESSORS = Runtime.getRuntime().availableProcessors();
 
     public static void main(String[] args) {
         String srcFolder = "/users/hunsonabadeer/Desktop/src";
@@ -13,19 +14,11 @@ public class Main {
 
         File[] files = srcDir.listFiles();
 
-        ImageResizer[] imageResizers = new ImageResizer[COUNT_OF_PROCESSORS];
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
 
-        for (int i = 0; i < COUNT_OF_PROCESSORS; i++) {
-            assert files != null;
-            int arrSize = Math.incrementExact(files.length / COUNT_OF_PROCESSORS);
-            File[] tempArr = new File[arrSize];
-            System.arraycopy(files, ((files.length / COUNT_OF_PROCESSORS) * i), tempArr, 0, tempArr.length);
-            imageResizers[i] = new ImageResizer(tempArr, dstFolder, start);
-        }
+        executor.execute(new ImageResizer(files, dstFolder, start));
 
-        for (ImageResizer imageResizer : imageResizers) {
-            new Thread(imageResizer).start();
-        }
+        executor.shutdown();
 
     }
 
