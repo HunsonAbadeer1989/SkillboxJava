@@ -45,7 +45,7 @@ public class Account
         if (canWithdraw(amount)) {
             this.money.addAndGet(-amount);
         } else {
-            System.out.println("You can't debit negative number!");
+            System.out.println("You can't withdraw negative number!");
         }
     }
 
