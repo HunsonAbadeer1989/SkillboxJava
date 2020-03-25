@@ -3,7 +3,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main {
-    private static final int COUNT_OF_PROCESSORS = 8;
+    private static final int COUNT_OF_PROCESSORS = Runtime.getRuntime().availableProcessors();
     public static void main(String[] args) {
         String srcFolder = "/users/hunsonabadeer/Desktop/src";
         String dstFolder = "/users/hunsonabadeer/Desktop/dst";
