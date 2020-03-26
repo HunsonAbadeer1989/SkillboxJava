@@ -6,7 +6,7 @@ public class Bank {
     private final Random random = new Random();
 
     public Bank(){
-        accounts = new ConcurrentHashMap<>();
+        accounts = new ConcurrentHashMap<>(16, 0.9f,1);
     }
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
@@ -35,23 +35,25 @@ public class Bank {
                     System.out.println("You cant transfer money from single account.");
                 } else {
                     if (!fromAccount.isBlocked() && !toAccount.isBlocked()) {
-                        if (fromAccount.canWithdraw(amount)) {
-                            if (fromAccountNum.compareTo(toAccountNum) < 0) {
-                                synchronized (fromAccount) {
+
+                            if (fromAccount.canWithdraw(amount)) { // canWithdraw marked synchronized now
+                                if (fromAccountNum.compareTo(toAccountNum) < 0) {
+                                    synchronized (fromAccount) {
+                                        synchronized (toAccount) {
+                                            transferMoney(fromAccount, toAccount, amount);
+                                        }
+                                    }
+                                } else {
                                     synchronized (toAccount) {
-                                        transferMoney(fromAccount, toAccount, amount);
+                                        synchronized (fromAccount) {
+                                            transferMoney(fromAccount, toAccount, amount);
+                                        }
                                     }
                                 }
                             } else {
-                                synchronized (toAccount) {
-                                    synchronized (fromAccount) {
-                                        transferMoney(fromAccount, toAccount, amount);
-                                    }
-                                }
+                                System.out.println("You can't withdraw this sum.");
                             }
-                        } else {
-                            System.out.println("You can't withdraw this sum.");
-                        }
+
                     } else {
                         System.out.println("Wrong operation. Account(s) was blocked.");
                     }
@@ -83,12 +85,8 @@ public class Bank {
     }
 
     private void lockAccounts(Account first, Account second) {
-        synchronized (first) {
-            synchronized (second) {
                 first.setBlocked();
                 second.setBlocked();
-            }
-        }
     }
 
     private void transferMoney(Account fromAccount, Account toAccount, long amount) {

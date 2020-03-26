@@ -43,13 +43,10 @@ public class Loader implements Runnable{
         long moneyInBankAfterThreads = bank.getBankBalance();
 
         for (Thread t : threadList) {
-            while (t.getState() != Thread.State.TERMINATED) {
-                try {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException ex){
-                    ex.printStackTrace();
-                }
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 

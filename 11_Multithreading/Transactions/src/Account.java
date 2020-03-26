@@ -49,7 +49,7 @@ public class Account
         }
     }
 
-    public boolean canWithdraw(long amount) {
+    public synchronized boolean canWithdraw(long amount) {
         if (amount > 0 && amount <= this.checkBalance()) {
             return true;
         } else {
