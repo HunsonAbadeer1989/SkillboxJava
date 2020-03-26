@@ -2,7 +2,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Account
 {
-    private AtomicLong money;
+//    private AtomicLong money;
+    private volatile Long money;
     private String accNumber;
     private Bank bank;
     private volatile boolean blocked;
@@ -12,7 +13,8 @@ public class Account
         this.bank = bank;
         this.accNumber = accNumber;
         blocked = false;
-        money = new AtomicLong();
+//        money = new AtomicLong();
+        money = 0L;
         this.bank.addAccount(this);
         isChecking = false;
     }
@@ -31,7 +33,8 @@ public class Account
 
     public void addMoney(long money) {
         if (money > 0) {
-            this.money.addAndGet(money);
+//            this.money.addAndGet(money);
+            setMoney(this.money + money);
         } else {
             System.out.println("Deposit must be positive!");
         }
@@ -43,7 +46,9 @@ public class Account
 
     public void withdraw(long amount) {
         if (canWithdraw(amount)) {
-            this.money.addAndGet(-amount);
+//            this.money.addAndGet(-amount);
+            setMoney(this.money - amount);
+
         } else {
             System.out.println("You can't withdraw negative number!");
         }
@@ -61,4 +66,12 @@ public class Account
         return isChecking;
     }
 
+    @Override
+    public String toString() {
+        return "Account " + accNumber;
+    }
+
+    public void setMoney(Long money) {
+        this.money = money;
+    }
 }
