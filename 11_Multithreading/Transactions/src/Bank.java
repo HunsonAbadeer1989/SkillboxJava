@@ -41,23 +41,24 @@ public class Bank {
                 } else {
                     if (!fromAccount.isBlocked() && !toAccount.isBlocked()) {
 
+                        try {
                             lock.lock();
                             if (fromAccount.canWithdraw(amount)) {
-                                    if (fromAccountNum.compareTo(toAccountNum) < 0) {
-                                        transferMoney(fromAccount, toAccount, amount);
-                                        System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                        System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
-                                    } else {
-//                                        synchronized (toAccount) {
-//                                            synchronized (fromAccount) {
-                                                transferMoney(fromAccount, toAccount, amount);
-                                                System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                                System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
-                                    }
+                                if (fromAccountNum.compareTo(toAccountNum) < 0) {
+                                    transferMoney(fromAccount, toAccount, amount);
+                                    System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
+                                    System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
+                                } else {
+                                    transferMoney(fromAccount, toAccount, amount);
+                                    System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
+                                    System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
+                                }
                             } else {
 //                                System.out.println("You can't withdraw this sum.");
                             }
+                        } finally {
                             lock.unlock();
+                        }
 
                     } else {
 //                        System.out.println("Wrong operation. Account(s) was blocked.");
