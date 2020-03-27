@@ -1,14 +1,17 @@
+import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
 
 public class Bank {
-    private ConcurrentHashMap<String, Account> accounts;
+    private HashMap<String, Account> accounts;
     private final Random random = new Random();
+    private ReentrantLock lock = new ReentrantLock();
 
-    public Bank(){
-        accounts = new ConcurrentHashMap<>(16, 0.9f,1);
+    public Bank() {
+        accounts = new HashMap<String, Account>();
     }
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
@@ -38,32 +41,23 @@ public class Bank {
                 } else {
                     if (!fromAccount.isBlocked() && !toAccount.isBlocked()) {
 
-                            if (fromAccount.canWithdraw(amount)) { // canWithdraw marked synchronized now
-                                try {
-                                    sleep(100);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                if (fromAccountNum.compareTo(toAccountNum) < 0) {
-                                    synchronized (fromAccount) {
-                                        synchronized (toAccount) {
-                                            transferMoney(fromAccount, toAccount, amount);
-                                            System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                            System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(),toAccount.toString(), toAccount.checkBalance());
-                                        }
+                            lock.lock();
+                            if (fromAccount.canWithdraw(amount)) {
+                                    if (fromAccountNum.compareTo(toAccountNum) < 0) {
+                                        transferMoney(fromAccount, toAccount, amount);
+                                        System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
+                                        System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
+                                    } else {
+//                                        synchronized (toAccount) {
+//                                            synchronized (fromAccount) {
+                                                transferMoney(fromAccount, toAccount, amount);
+                                                System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
+                                                System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
                                     }
-                                } else {
-                                    synchronized (toAccount) {
-                                        synchronized (fromAccount) {
-                                            transferMoney(fromAccount, toAccount, amount);
-                                            System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                            System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(),toAccount.toString(), toAccount.checkBalance());
-                                        }
-                                    }
-                                }
                             } else {
 //                                System.out.println("You can't withdraw this sum.");
                             }
+                            lock.unlock();
 
                     } else {
 //                        System.out.println("Wrong operation. Account(s) was blocked.");
@@ -91,13 +85,13 @@ public class Bank {
         accounts.put(acc.getAccNumber(), acc);
     }
 
-    public ConcurrentHashMap<String, Account> getAccounts() {
+    public HashMap<String, Account> getAccounts() {
         return accounts;
     }
 
     private void lockAccounts(Account first, Account second) {
-                first.setBlocked();
-                second.setBlocked();
+        first.setBlocked();
+        second.setBlocked();
     }
 
     private void transferMoney(Account fromAccount, Account toAccount, long amount) {
@@ -114,7 +108,7 @@ public class Bank {
         }
     }
 
-    protected long getBankBalance(){
-       return accounts.values().stream().mapToLong(Account::checkBalance).sum();
+    protected long getBankBalance() {
+        return accounts.values().stream().mapToLong(Account::checkBalance).sum();
     }
 }

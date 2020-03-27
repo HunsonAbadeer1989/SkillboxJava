@@ -1,12 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Loader implements Runnable{
     private static final int COUNT_OF_PROCESSORS = Runtime.getRuntime().availableProcessors();
 
     private Bank bank;
-    private ConcurrentHashMap<String, Account> accounts;
+    private HashMap<String, Account> accounts;
 
     public Loader(Bank bank) {
         this.bank = bank;
@@ -49,8 +49,6 @@ public class Loader implements Runnable{
                 e.printStackTrace();
             }
         }
-
-
 
         System.out.println(moneyInBankBeforeThreads);
         System.out.println(moneyInBankAfterThreads);
