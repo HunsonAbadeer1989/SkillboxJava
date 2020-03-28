@@ -27,7 +27,7 @@ public class Account
         this.blocked = true;
     }
 
-    public long checkBalance() {
+    public synchronized long checkBalance() {
         return money.longValue();
     }
 
