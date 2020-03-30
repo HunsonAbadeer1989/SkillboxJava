@@ -43,3 +43,26 @@ public class Test {
         System.out.println("Total: " + summ + " [expected: 200]");
     }
 }
+//    Transfer from: Account base , to Account 2
+//        Account base: 100, Account 2: 100
+//        Transfer from: Account base , to Account 10
+//        Account base: 0, Account 10: 100
+//        You can't withdraw negative number!
+//        Transfer from: Account base , to Account 9
+//        Account base: 0, Account 9: 100
+//        Total: 300 [expected: 200]
+
+//    Transfer from: Account base , to Account 3
+//        Account base: 100, Account 3: 100
+//        Transfer from: Account base , to Account 10
+//        Account base: 0, Account 10: 100
+//        You can't withdraw negative number!
+//        Transfer from: Account base , to Account 1
+//        Account base: 0, Account 1: 100
+//        You can't withdraw negative number!
+//        Transfer from: Account base , to Account 2
+//        Account base: 0, Account 2: 100
+//        You can't withdraw negative number!
+//        Transfer from: Account base , to Account 9
+//        Account base: 0, Account 9: 100
+//        Total: 500 [expected: 200]

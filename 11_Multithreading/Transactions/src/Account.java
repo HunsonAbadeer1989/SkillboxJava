@@ -1,8 +1,7 @@
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Account
-{
-//    private AtomicLong money;
+public class Account {
+    //    private AtomicLong money;
     private volatile Long money;
     private String accNumber;
     private Bank bank;
@@ -27,8 +26,10 @@ public class Account
         this.blocked = true;
     }
 
-    public synchronized long checkBalance() {
-        return money.longValue();
+    public long checkBalance() {
+        synchronized (this) {
+            return money.longValue();
+        }
     }
 
     public void addMoney(long money) {
@@ -54,7 +55,7 @@ public class Account
         }
     }
 
-    public boolean canWithdraw(long amount) {
+    public synchronized boolean canWithdraw(long amount) {
         if (amount > 0 && amount <= this.checkBalance()) {
             return true;
         } else {
