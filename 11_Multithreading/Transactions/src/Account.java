@@ -71,4 +71,5 @@ public class Account {
     public void setMoney(Long money) {
         this.money = money;
     }
+
 }

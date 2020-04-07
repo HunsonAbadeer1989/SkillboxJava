@@ -27,4 +27,5 @@ public class Test_1_RUB {
 
         System.out.println("First account summ: " + baseAcc.checkBalance() + " [expected: 199]");
     }
+
 }

@@ -114,4 +114,5 @@ public class Bank {
     protected long getBankBalance() {
         return accounts.values().stream().mapToLong(Account::checkBalance).sum();
     }
+
 }
