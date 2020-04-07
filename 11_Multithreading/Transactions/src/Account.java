@@ -1,7 +1,5 @@
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Account {
-    //    private AtomicLong money;
     private volatile Long money;
     private String accNumber;
     private Bank bank;
@@ -12,13 +10,12 @@ public class Account {
         this.bank = bank;
         this.accNumber = accNumber;
         blocked = false;
-//        money = new AtomicLong();
         money = 0L;
         this.bank.addAccount(this);
         isChecking = false;
     }
 
-    public boolean isBlocked() {
+    public synchronized boolean isBlocked() {
         return blocked;
     }
 
@@ -27,14 +24,11 @@ public class Account {
     }
 
     public long checkBalance() {
-        synchronized (this) {
-            return money.longValue();
-        }
+        return money;
     }
 
     public void addMoney(long money) {
         if (money > 0) {
-//            this.money.addAndGet(money);
             setMoney(this.money + money);
         } else {
             System.out.println("Deposit must be positive!");
@@ -47,15 +41,13 @@ public class Account {
 
     public void withdraw(long amount) {
         if (canWithdraw(amount)) {
-//            this.money.addAndGet(-amount);
             setMoney(this.money - amount);
-
         } else {
             System.out.println("You can't withdraw negative number!");
         }
     }
 
-    public synchronized boolean canWithdraw(long amount) {
+    public boolean canWithdraw(long amount) {
         if (amount > 0 && amount <= this.checkBalance()) {
             return true;
         } else {
@@ -65,6 +57,10 @@ public class Account {
 
     public boolean isCheck() {
         return isChecking;
+    }
+
+    public boolean setOnCheck(boolean check) {
+        return isChecking = check;
     }
 
     @Override

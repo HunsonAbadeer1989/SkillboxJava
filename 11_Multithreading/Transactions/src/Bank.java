@@ -11,10 +11,22 @@ public class Bank {
         accounts = new HashMap<String, Account>();
     }
 
-    public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
+    public boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
             throws InterruptedException {
         sleep(1000);
-        return random.nextBoolean();
+
+        Account from = accounts.get(fromAccountNum);
+        Account to = accounts.get(toAccountNum);
+
+        from.setOnCheck(true);
+        to.setOnCheck(true);
+
+        boolean result = random.nextBoolean();
+
+        from.setOnCheck(false);
+        to.setOnCheck(false);
+
+        return result;
     }
 
     /**
@@ -34,28 +46,13 @@ public class Bank {
                 System.out.println("Accounts is checking, you can't transfer now, try again later.");
             } else {
                 if (fromAccountNum.equals(toAccountNum)) {
-//                    System.out.println("You cant transfer money from single account.");
+//                    System.out.println("You cant transfer money from same account.");
                 } else {
                     if (!fromAccount.isBlocked() && !toAccount.isBlocked()) {
 
-                            if (fromAccountNum.compareTo(toAccountNum) < 0) {
-                                synchronized (fromAccount) {
-                                    synchronized (toAccount) {
-                                        transferMoney(fromAccount, toAccount, amount);
-                                        System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                        System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
-                                    }
-                                }
-
-                            } else {
-                                synchronized (toAccount) {
-                                    synchronized (fromAccount) {
-                                        transferMoney(fromAccount, toAccount, amount);
-                                        System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
-                                        System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
-                                    }
-                                }
-                            }
+                        transferMoney(fromAccount, toAccount, amount);
+                        System.out.printf("Transfer from: %s , to %s \n", fromAccount.toString(), toAccount.toString());
+                        System.out.printf("\t\t%s: %s, %s: %s \n", fromAccount.toString(), fromAccount.checkBalance(), toAccount.toString(), toAccount.checkBalance());
 
                     } else {
 //                        System.out.println("Wrong operation. Account(s) was blocked.");
@@ -87,27 +84,30 @@ public class Bank {
         return accounts;
     }
 
-    private void lockAccounts(Account first, Account second) {
+    private synchronized void lockAccounts(Account first, Account second) {
         first.setBlocked();
         second.setBlocked();
     }
 
-    private synchronized void transferMoney(Account fromAccount, Account toAccount, long amount) {
-        if (fromAccount.canWithdraw(amount)) {
-            fromAccount.withdraw(amount);
-            toAccount.addMoney(amount);
-            try {
-                String fromAccountNum = fromAccount.getAccNumber();
-                String toAccountNum = toAccount.getAccNumber();
-                if (amount > 50_000 && isFraud(fromAccountNum, toAccountNum, amount)) {
-                    lockAccounts(fromAccount, toAccount);
+    private void transferMoney(Account fromAccount, Account toAccount, long amount) {
+        synchronized (fromAccount) {
+            if (fromAccount.canWithdraw(amount)) {
+                fromAccount.withdraw(amount);
+                toAccount.addMoney(amount);
+//                lockAccounts(fromAccount, toAccount);
+
+                try {
+                    String fromAccountNum = fromAccount.getAccNumber();
+                    String toAccountNum = toAccount.getAccNumber();
+                    if (amount > 50_000 && isFraud(fromAccountNum, toAccountNum, amount)) {
+                        lockAccounts(fromAccount, toAccount);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } else {
+                System.out.println("You can't withdraw this sum.");
             }
-        }
-        else {
-            System.out.println("You can't withdraw this sum.");
         }
     }
 
