@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class Test_10_Accounts implements Runnable{
+public class Test_10_Accounts{
 
     private static final int RANDOM_TRANSACTIONS = (int) (Math.random() * 4500) + 500;
 
@@ -12,16 +14,6 @@ public class Test_10_Accounts implements Runnable{
     public Test_10_Accounts(Bank bank) {
         this.bank = bank;
         this.accounts = bank.getAccounts();
-    }
-
-    @Override
-    public void run() {
-        for(int i = 0; i < RANDOM_TRANSACTIONS; i++){
-            String fromAccNumber = String.valueOf((int) (Math.random() * accounts.values().size()));
-            String randomAccNumber = String.valueOf((int) (Math.random() * accounts.values().size()));
-            long amount = 100 + (long) (Math.random() * 900);
-            bank.transfer(fromAccNumber, randomAccNumber, amount);
-        }
     }
 
     public static void main(String[] args) {
@@ -35,25 +27,29 @@ public class Test_10_Accounts implements Runnable{
 
         long moneyBeforeTrans = bank.getBankBalance();
 
-        List<Thread> threadList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            threadList.add(new Thread(new Loader(bank)));
+        var e = Executors.newFixedThreadPool(10);
+        for(int i = 0; i <= RANDOM_TRANSACTIONS; i++){
+            e.submit(() -> {
+                String fromAccNumber = String.valueOf((int) (Math.random() * 10));
+                String randomAccNumber = String.valueOf((int) (Math.random() * 10));
+                long amount = 100 + (long) (Math.random() * 900);
+                bank.transfer(fromAccNumber, randomAccNumber, amount);
+            });
         }
-        threadList.forEach(Thread::start);
 
-        for (Thread t : threadList) {
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        e.shutdown();
+
+        try {
+            e.awaitTermination(1, TimeUnit.DAYS);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
         }
 
         long moneyAfterTrans = bank.getBankBalance();
 
         System.out.println(moneyBeforeTrans);
         System.out.println(moneyAfterTrans);
-        System.out.println("Count of transactions" + RANDOM_TRANSACTIONS);
+        System.out.println("Count of transactions: " + RANDOM_TRANSACTIONS);
     }
 
 }
