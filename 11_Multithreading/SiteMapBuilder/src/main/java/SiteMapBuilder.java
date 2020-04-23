@@ -4,18 +4,21 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.RecursiveTask;
 
-public class SiteMapBuilder extends RecursiveTask<Set<String>> {
+public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, String>> {
 
     private String pageURL;
-    final static Set<String> urls = new HashSet<>();
+    //    final static Set<String> urls = new HashSet<>();
+    private static ConcurrentHashMap<String, String> allURLs = new ConcurrentHashMap<>();
 
     public SiteMapBuilder(String pageURL) {
         this.pageURL = pageURL;
     }
 
     static Set<String> getLinks(String pageURL) {
+        System.out.println(Thread.currentThread() + " load " + pageURL);
         Set<String> linksFromPage = new TreeSet<>();
 
         try {
@@ -25,13 +28,11 @@ public class SiteMapBuilder extends RecursiveTask<Set<String>> {
             Elements allLinks = document.select("a[href]");
             allLinks.forEach(l -> {
                 String tempLink = l.absUrl("href");
-                if(allLinks.isEmpty()){
+                if (allLinks.isEmpty()) {
                     return;
                 }
                 if (!tempLink.equals(pageURL) && tempLink.contains(pageURL)) {
                     linksFromPage.add(tempLink);
-                    System.out.println(tempLink);
-                    getLinks(tempLink);
                 }
             });
         } catch (IOException e) {
@@ -42,15 +43,13 @@ public class SiteMapBuilder extends RecursiveTask<Set<String>> {
     }
 
     @Override
-    protected Set<String> compute() { //https://habr.com/ru/post/128985/
-        Set<String> result = new TreeSet<>();
+    protected ConcurrentHashMap<String, String> compute() {
+        ConcurrentHashMap<String, String> result = new ConcurrentHashMap<>();
         List<SiteMapBuilder> subTasks = new LinkedList<>();
         for (String subLink : getLinks(pageURL)) {
-            if (!urls.contains(subLink)) {
-                synchronized (urls) {
-                    urls.add(subLink);
-                }
-                result.add(subLink);
+            if (!allURLs.contains(subLink)) {
+//                allURLs.put(subLink, "");
+                result.put(subLink, "");
 
                 SiteMapBuilder task = new SiteMapBuilder(subLink);
                 task.fork();
@@ -58,7 +57,7 @@ public class SiteMapBuilder extends RecursiveTask<Set<String>> {
             }
         }
         for (SiteMapBuilder task : subTasks) {
-            result.addAll(task.join());
+            result.putAll(task.join());
         }
         return result;
     }
