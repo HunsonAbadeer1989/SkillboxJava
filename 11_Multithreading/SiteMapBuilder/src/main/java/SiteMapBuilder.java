@@ -10,11 +10,15 @@ import java.util.concurrent.RecursiveTask;
 public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, String>> {
 
     private String pageURL;
-    //    final static Set<String> urls = new HashSet<>();
-    private static ConcurrentHashMap<String, String> allURLs = new ConcurrentHashMap<>();
+    private Set<String> allURLs = ConcurrentHashMap.newKeySet();
 
     public SiteMapBuilder(String pageURL) {
         this.pageURL = pageURL;
+    }
+
+    public SiteMapBuilder(String pageURL, Set<String> allURLs) {
+        this.pageURL = pageURL;
+        this.allURLs = allURLs;
     }
 
     static Set<String> getLinks(String pageURL) {
@@ -24,11 +28,11 @@ public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, Stri
         try {
             Document document = Jsoup.connect(pageURL).maxBodySize(0)
                     .ignoreContentType(true)
-                    .timeout(10 * 1000).get();
+                    .timeout(10 * 3000).get();
             Elements allLinks = document.select("a[href]");
             allLinks.forEach(l -> {
                 String tempLink = l.absUrl("href");
-                if (allLinks.isEmpty()) {
+                if (allLinks.isEmpty() || linksFromPage.contains(tempLink) || linksFromPage.contains(pageURL + "/")) {
                     return;
                 }
                 if (!tempLink.equals(pageURL) && tempLink.contains(pageURL)) {
@@ -38,7 +42,6 @@ public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, Stri
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return linksFromPage;
     }
 
@@ -47,11 +50,10 @@ public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, Stri
         ConcurrentHashMap<String, String> result = new ConcurrentHashMap<>();
         List<SiteMapBuilder> subTasks = new LinkedList<>();
         for (String subLink : getLinks(pageURL)) {
-            if (!allURLs.contains(subLink)) {
-//                allURLs.put(subLink, "");
+            if (!allURLs.contains(subLink) && !result.containsKey(subLink) && !subLink.equals(pageURL)) {
                 result.put(subLink, "");
 
-                SiteMapBuilder task = new SiteMapBuilder(subLink);
+                SiteMapBuilder task = new SiteMapBuilder(subLink, allURLs);
                 task.fork();
                 subTasks.add(task);
             }
