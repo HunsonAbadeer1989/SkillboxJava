@@ -7,7 +7,6 @@ import java.util.concurrent.ForkJoinPool;
 public class Main {
     private static final String FILE = "src/main/resources/site_map.txt";
 
-
     public static void main(String[] args) {
 //        final String URL = "https://lenta.ru/";
 //        final String URL = "https://skillbox.ru/";
@@ -36,5 +35,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
 }

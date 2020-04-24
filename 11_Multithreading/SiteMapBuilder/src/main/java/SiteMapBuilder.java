@@ -28,16 +28,14 @@ public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, Stri
         try {
             Document document = Jsoup.connect(pageURL).maxBodySize(0)
                     .ignoreContentType(true)
-                    .timeout(10 * 3000).get();
+                    .timeout(10 * 5000).get();
             Elements allLinks = document.select("a[href]");
             allLinks.forEach(l -> {
                 String tempLink = l.absUrl("href");
                 if (allLinks.isEmpty() || linksFromPage.contains(tempLink) || linksFromPage.contains(pageURL + "/")) {
                     return;
                 }
-                if (!tempLink.equals(pageURL) && tempLink.contains(pageURL)) {
-                    linksFromPage.add(tempLink);
-                }
+                linksFromPage.add(tempLink);
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,12 +49,13 @@ public class SiteMapBuilder extends RecursiveTask<ConcurrentHashMap<String, Stri
         List<SiteMapBuilder> subTasks = new LinkedList<>();
         for (String subLink : getLinks(pageURL)) {
             if (!allURLs.contains(subLink) && !result.containsKey(subLink) && !subLink.equals(pageURL)) {
-                result.put(subLink, "");
+            result.put(subLink, "");
+            allURLs.add(subLink);
 
-                SiteMapBuilder task = new SiteMapBuilder(subLink, allURLs);
-                task.fork();
-                subTasks.add(task);
-            }
+            SiteMapBuilder task = new SiteMapBuilder(subLink, allURLs);
+            task.fork();
+            subTasks.add(task);
+                }
         }
         for (SiteMapBuilder task : subTasks) {
             result.putAll(task.join());
