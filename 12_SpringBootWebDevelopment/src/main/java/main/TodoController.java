@@ -19,12 +19,12 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getTodoItem(int id){
+    public ResponseEntity<TodoItem> getTodoItem(int id){
         TodoItem todoItem = Storage.getAllTodoItems().get(id);
         if(todoItem == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return new ResponseEntity(todoItem, HttpStatus.OK);
+        return new ResponseEntity<>(todoItem, HttpStatus.OK);
     }
 
     @PostMapping()
@@ -33,7 +33,7 @@ public class TodoController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteItem(@PathVariable int id){
+    public void deleteItem(@PathVariable("id") int id){
         Storage.removeTodoItem(id);
     }
 
