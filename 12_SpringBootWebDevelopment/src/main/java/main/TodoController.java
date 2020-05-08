@@ -1,6 +1,7 @@
 package main;
 
 import main.resoponse.TodoItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
-@RequestMapping(value = "/todo")
+@RequestMapping(value = "/")
 public class TodoController {
 
     @GetMapping()
@@ -35,6 +37,11 @@ public class TodoController {
     @DeleteMapping(value = "/{id}")
     public void deleteItem(@PathVariable("id") int id){
         Storage.removeTodoItem(id);
+    }
+
+    @PutMapping("/{id}")
+    public  void update(@PathVariable("id") int id, String title){
+        Storage.getItemById(id).setTitle(Objects.requireNonNull(title));
     }
 
 }
