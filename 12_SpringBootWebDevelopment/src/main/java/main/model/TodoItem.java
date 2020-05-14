@@ -1,19 +1,27 @@
-package main.resoponse;
+package main.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Entity
+@Table(name="todo_item")
 public class TodoItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id")
     private int id;
     @NotBlank
+    @Column(name="title")
     private String title;
+    @Column(name="status")
     private boolean done;
 
     public TodoItem() {
+    }
+
+    public TodoItem(@NotBlank String title) {
+        this.title = title;
     }
 
     public TodoItem(int id, String name, boolean done) {
@@ -22,8 +30,6 @@ public class TodoItem {
         this.done = done;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public int getId() {
         return id;
     }
@@ -46,5 +52,10 @@ public class TodoItem {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    @Override
+    public String toString() {
+        return "'" + title + "'";
     }
 }
