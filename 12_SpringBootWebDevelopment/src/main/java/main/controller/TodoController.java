@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/")
@@ -23,7 +24,7 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodoItem> getTodoItem(@PathVariable int id){
+    public Optional<TodoItem> getTodoItem(@PathVariable int id){
         return todoService.getTodoItem(id);
     }
 
