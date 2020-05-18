@@ -7,13 +7,16 @@ import java.util.concurrent.atomic.AtomicLong;
 @Entity
 @Table(name="todo_item")
 public class TodoItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
     private int id;
+
     @NotBlank
     @Column(name="title")
     private String title;
+
     @Column(name="status")
     private boolean done;
 
