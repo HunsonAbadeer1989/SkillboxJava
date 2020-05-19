@@ -69,7 +69,7 @@ public class TodoController {
         todoService.update(id, todoItem);
         return "index";
     }
-    
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TodoItem> getTodoItemById(@PathVariable int id){
