@@ -39,10 +39,9 @@ class TodoServiceTest {
         given(mockRepository.findById(anyInt()))
                 .willThrow(ObjectNotFoundException.class);
 
-        Throwable thrown = assertThrows(ObjectNotFoundException.class, () -> {
+        assertThrows(ObjectNotFoundException.class, () -> {
             service.getTodoItemById(anyInt());
         });
-        assertNotNull(thrown);
     }
 
     @Test
@@ -54,8 +53,5 @@ class TodoServiceTest {
 
         Assertions.assertNotEquals(TASK_A.getTitle(), "Task B");
     }
-
-
-
 
 }
