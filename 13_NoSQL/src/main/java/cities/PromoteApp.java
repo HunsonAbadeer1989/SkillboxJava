@@ -1,6 +1,8 @@
 package cities;
 
 import redis.clients.jedis.Jedis;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PromoteApp {
@@ -10,16 +12,16 @@ public class PromoteApp {
 
     public static void getListOfUsers(){
         List<User> userList = List.of(
-                new User("Vika"),
-                new User("Sonya"),
-                new User("Katya"),
-                new User("Olesya"),
-                new User("ZafarJan"),
-                new User("Tonya"),
-                new User("Maga-G-est"),
-                new User("Raffik"),
-                new User("Ashot"),
-                new User("Kishlak228")
+                new User("1 Vika"),
+                new User("2 Sonya" ),
+                new User("3 Katya" ),
+                new User("4 Olesya" ),
+                new User("5 ZafarJan" ),
+                new User("6 Tonya" ),
+                new User("7 Maga-G-est" ),
+                new User("8 Raffik" ),
+                new User("9 Ashot"),
+                new User("10 Kishlak228")
         );
         for(User user : userList){
             jedis.rpush(KEY, user.getName());
@@ -30,30 +32,32 @@ public class PromoteApp {
         return jedis.lrange(KEY, 0, jedis.llen(KEY));
     }
 
-    public static String getRandomUser(){
-        int randomUserNumber = (int) (Math.random() * jedis.llen(KEY));
-        return jedis.lindex(KEY, randomUserNumber);
-    }
-
     public static void main(String[] args) {
         jedis = new Jedis("localhost");
+        jedis.del(KEY);
         getListOfUsers();
 
         for(int i = 0; i > -1 ; ){
+            LocalDateTime start = LocalDateTime.now();
             List<String> users = getUsers();
-            users.forEach(System.out::println);
-            if(i % 10 == 0){
-                String randomUser = getRandomUser();
-                users.remove(randomUser);
-                System.out.println("HEY LOOK AT ME MY, NAME IS: " +  randomUser.toUpperCase());
+
+            for(String user : users){
+                System.out.println(user);
+                try {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException ex){
+                    ex.printStackTrace();
+                }
+                if(LocalDateTime.now().minusSeconds(10L).isAfter(start)){ // ones at ten seconds promote user
+                    int randomUserNumber = (int) (Math.random() * jedis.llen(KEY));
+                    String randomUser = jedis.lindex(KEY, randomUserNumber);
+                    System.out.println("HEY LOOK AT ME MY, NAME IS: " +  randomUser.toUpperCase());
+                    jedis.lrem(KEY, 1, randomUser);
+                    jedis.rpush(KEY, randomUser);
+                }
             }
             i++;
-            try{
-                Thread.sleep(1000);
-            }
-            catch(InterruptedException ex){
-                ex.printStackTrace();
-            }
         }
     }
 }
