@@ -16,8 +16,11 @@ public class DisplayApp {
             try (JedisPool jedisPool = new JedisPool("localhost")) {
 
                 Jedis jedis = jedisPool.getResource();
-                for (String user : jedis.lrange(KEY, 0, jedis.llen(KEY))) {
+                List<String> users = jedis.lrange(KEY, 0, jedis.llen(KEY));
+
+                for (String user : users) {
                     System.out.println(user);
+
                     try{
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
