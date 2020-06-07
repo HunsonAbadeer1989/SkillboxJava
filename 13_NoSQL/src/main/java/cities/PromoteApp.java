@@ -52,8 +52,8 @@ public class PromoteApp {
                     int randomUserNumber = (int) (Math.random() * jedis.llen(KEY));
                     String randomUser = jedis.lindex(KEY, randomUserNumber);
                     jedis.lrem(KEY, 1, randomUser);
-                    jedis.linsert(KEY, ListPosition.AFTER, user, randomUser);
-                    System.out.println(randomUser.toUpperCase());
+                    jedis.linsert(KEY, ListPosition.BEFORE, users.get(0), randomUser);
+                    System.out.printf("User %s was promoted. \n", randomUser.toUpperCase());
                 }
                 System.out.println(user);
             }

@@ -14,7 +14,6 @@ public class DisplayApp {
 
         while (true) {
             try (JedisPool jedisPool = new JedisPool("localhost")) {
-
                 Jedis jedis = jedisPool.getResource();
                 List<String> users = jedis.lrange(KEY, 0, jedis.llen(KEY));
 
