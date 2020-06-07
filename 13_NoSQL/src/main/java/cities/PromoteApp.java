@@ -44,11 +44,11 @@ public class PromoteApp {
 
             for (String user : users) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
-                if(LocalDateTime.now().minusSeconds(5L).isAfter(start)){ // ones at ten seconds promote user
+                if(LocalDateTime.now().minusSeconds(10L).isAfter(start)){ // ones at ten seconds promote user
                     int randomUserNumber = (int) (Math.random() * jedis.llen(KEY));
                     String randomUser = jedis.lindex(KEY, randomUserNumber);
                     jedis.lrem(KEY, 1, randomUser);
