@@ -37,7 +37,7 @@ public class StudentsParser {
                     mongoCollection.insertOne(studentDocument);
                 }
             }
-            
+
             System.out.printf("Total count of students: %s \n", mongoCollection.countDocuments());
 
             System.out.printf("%s students grater then 40 years old \n",
