@@ -8,7 +8,7 @@ public class GroceryStores {
 
     public static void main(String[] args) {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StorageMongoDB storageMongoDB = new StorageMongoDB();
+        StorageMongoDB storageMongoDB = new StorageMongoDB("localhost",27017);
         storageMongoDB.createGroceryAndStores();
 
         while (true) {

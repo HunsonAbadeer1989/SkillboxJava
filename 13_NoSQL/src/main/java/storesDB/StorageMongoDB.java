@@ -6,6 +6,8 @@ import static com.mongodb.client.model.Filters.*;
 
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.Document;
@@ -13,41 +15,60 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class StorageMongoDB {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class StorageMongoDB  {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> groceries;
     private MongoCollection<Document> stores;
+    private Logger loggerInfo;
+    private Logger loggerError;
+    private static Marker CORRECT_INPUT = MarkerManager.getMarker("INPUT_CORRECT");
+    private static Marker WRONG_INPUT = MarkerManager.getMarker("WRONG_INPUT");
 
-    public StorageMongoDB() {
-        this.mongoClient = MongoClients.create("mongodb://localhost:27017");
+    public MongoCollection<Document> getGroceries() {
+        return groceries;
+    }
+
+    public MongoCollection<Document> getStores() {
+        return stores;
+    }
+
+    public StorageMongoDB(String address, Integer port) {
+//        this.mongoClient = MongoClients.create("mongodb://localhost:27017");
+        this.mongoClient = MongoClients.create("mongodb://" + address + ":" + port);
         this.mongoDatabase = mongoClient.getDatabase("groceryStores");
         this.groceries = mongoDatabase.getCollection("products");
         this.stores = mongoDatabase.getCollection("stores");
         groceries.drop();
         stores.drop();
+        loggerInfo = LogManager.getLogger("InfoLog");
+        loggerError = LogManager.getLogger("ErrorLog");
     }
 
-    private boolean isExist(MongoCollection<Document> collection, Object value) {
+    public boolean isExist(MongoCollection<Document> collection, Object value) {
         FindIterable<Document> doc = collection.find(new Document("name", value));
         return doc.first() != null;
     }
 
     public void addStore(String storeName) {
         if (isExist(stores, storeName)) {
-            System.out.printf("Store %s is already exist! \n", storeName);
+            loggerError.error(WRONG_INPUT, "Store " + storeName + " is already exist! \n");
         } else {
             stores.insertOne(new Document("name", storeName).append("groceries", new ArrayList<>()));
-            System.out.printf("Store %s was added \n", storeName);
+            loggerInfo.info(CORRECT_INPUT, "Store " + storeName + " was added \n");
         }
     }
 
     public void addProduct(String productName, int price) {
         if (isExist(groceries, productName)) {
-            System.out.printf("Product %s is already exist! \n", productName);
+            loggerError.error(WRONG_INPUT, "Product " + productName + " is already exist! \n");
+
         } else {
             groceries.insertOne(new Document("name", productName).append("price", price));
-            System.out.printf("Product %s was added \n", productName);
+            loggerInfo.info(CORRECT_INPUT, "Product " + productName + " was added \n");
         }
     }
 
@@ -55,10 +76,11 @@ public class StorageMongoDB {
         if (isExist(stores, storeName) && isExist(groceries, productName)) {
             stores.updateOne(eq("name", storeName),
                     new Document("$addToSet", new Document("groceries", productName)));
-            System.out.printf("Product %s was add to store %s \n", productName, storeName);
+            loggerInfo.info(CORRECT_INPUT, "Product " + productName + " was add to store " + storeName + "\n");
 
         } else {
             System.out.printf("Product %s or store %s isn't exist! \n", productName, storeName);
+            loggerError.error(WRONG_INPUT, "Product " + productName + " or store " + storeName + " isn't exist! \n");
         }
     }
 
@@ -87,28 +109,30 @@ public class StorageMongoDB {
             System.out.printf("Products count with price greater than 100: %s. \n", priceGt100);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            loggerError.error(e.getMessage(), e);
         }
     }
 
-    public void createGroceryAndStores() {
+    public boolean createGroceryAndStores() {
         addStore("GLOBUS");
 
         addProduct("EGGS", 90);
         addProduct("BREAD", 50);
         addProduct("CHEESE", 100);
         addProduct("SAUSAGE", 150);
-        addProduct("MILK", 80);
+        addProduct("CIGARETTES", 250);
         addProduct("CHOCOLATE", 120);
-        addProduct("BUTTER", 90);
         addProduct("NAPKINS", 60);
         addProduct("VODKA", 200);
-        addProduct("CIGARETTES", 250);
+        addProduct("BUTTER", 90);
+        addProduct("MILK", 80);
 
-        putProductInStore( "EGGS" ,"GLOBUS");
-        putProductInStore( "CHEESE" ,"GLOBUS");
-        putProductInStore( "CHOCOLATE" ,"GLOBUS");
-        putProductInStore( "BUTTER" ,"GLOBUS");
-        putProductInStore( "MILK" ,"GLOBUS");
+        putProductInStore("EGGS", "GLOBUS");
+        putProductInStore("CHEESE", "GLOBUS");
+        putProductInStore("CHOCOLATE", "GLOBUS");
+        putProductInStore("BUTTER", "GLOBUS");
+        putProductInStore("MILK", "GLOBUS");
+
+        return true;
     }
 }
