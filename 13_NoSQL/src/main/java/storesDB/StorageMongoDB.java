@@ -1,9 +1,11 @@
 package storesDB;
 
-import com.mongodb.client.*;
 
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Projections.fields;
 
+import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
 import org.apache.logging.log4j.Marker;
@@ -18,7 +20,8 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class StorageMongoDB  {
+public class StorageMongoDB {
+
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> groceries;
@@ -28,16 +31,7 @@ public class StorageMongoDB  {
     private static Marker CORRECT_INPUT = MarkerManager.getMarker("INPUT_CORRECT");
     private static Marker WRONG_INPUT = MarkerManager.getMarker("WRONG_INPUT");
 
-    public MongoCollection<Document> getGroceries() {
-        return groceries;
-    }
-
-    public MongoCollection<Document> getStores() {
-        return stores;
-    }
-
     public StorageMongoDB(String address, Integer port) {
-//        this.mongoClient = MongoClients.create("mongodb://localhost:27017");
         this.mongoClient = MongoClients.create("mongodb://" + address + ":" + port);
         this.mongoDatabase = mongoClient.getDatabase("groceryStores");
         this.groceries = mongoDatabase.getCollection("products");
@@ -46,6 +40,14 @@ public class StorageMongoDB  {
         stores.drop();
         loggerInfo = LogManager.getLogger("InfoLog");
         loggerError = LogManager.getLogger("ErrorLog");
+    }
+
+    public MongoCollection<Document> getGroceries() {
+        return groceries;
+    }
+
+    public MongoCollection<Document> getStores() {
+        return stores;
     }
 
     public boolean isExist(MongoCollection<Document> collection, Object value) {
@@ -134,5 +136,18 @@ public class StorageMongoDB  {
         putProductInStore("MILK", "GLOBUS");
 
         return true;
+    }
+
+    public String getStoreName(String name) {
+        return stores.find().first().get("name", name);
+    }
+
+    public String getProductName(String name) {
+        return groceries.find().first().get("name", name);
+    }
+
+    public Document getProductInStore(String storeName, String productName) {
+        return stores.find(and(eq("name", storeName), eq("groceries", productName)))
+                .projection(fields(excludeId())).first();
     }
 }
