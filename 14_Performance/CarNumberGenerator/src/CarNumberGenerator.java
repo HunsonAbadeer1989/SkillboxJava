@@ -1,15 +1,24 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class CarNumberGenerator implements Runnable {
-    private FileOutputStream writer;
+
+//    private FileOutputStream writer;
+    private FileChannel fChannel;
+    private RandomAccessFile rwriter;
     private int fromRegion;
     private int toRegion;
 
     public CarNumberGenerator(int fileNumber, int fromRegion, int toRegion) throws FileNotFoundException {
         StringBuilder fileName = (new StringBuilder()).append("res/numbers").append(fileNumber).append(".txt");
-        this.writer = new FileOutputStream(fileName.toString());
+//        this.writer = new FileOutputStream(fileName.toString());
+
+        this.rwriter = new RandomAccessFile(fileName.toString(), "rw");
+        this.fChannel = rwriter.getChannel();
         this.fromRegion = fromRegion;
         this.toRegion = toRegion;
     }
@@ -17,31 +26,36 @@ public class CarNumberGenerator implements Runnable {
     public void run() {
         long start = System.currentTimeMillis();
 
+        char[] letters = new char[]{'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
+
         try {
-            char[] letters = new char[]{'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
 
             for (int region = fromRegion; region < toRegion ; region++) {
-                StringBuilder builder = new StringBuilder();
-                for (int number = 1; number < 1000; number++) {
-                    for (char firstLetter : letters) {
-                        for (char secondLetter : letters) {
-                            for (char thirdLetter : letters) {
-                                builder.append(firstLetter).append(padNumber(number, 3))
-                                        .append(secondLetter).append(thirdLetter)
-                                        .append(padNumber(region, 2))
-                                        .append("\n");
-                            }
+            StringBuilder builder = new StringBuilder();
+            for (int number = 1; number < 1000; number++) {
+                for (char firstLetter : letters) {
+                    for (char secondLetter : letters) {
+                        for (char thirdLetter : letters) {
+                            builder.append(firstLetter).append(padNumber(number, 3))
+                                    .append(secondLetter).append(thirdLetter)
+                                    .append(padNumber(region, 2))
+                                    .append("\n");
                         }
                     }
                 }
-                writer.write(builder.toString().getBytes());
             }
+            ByteBuffer buffer = ByteBuffer.wrap(builder.toString().getBytes());
+            fChannel.write(buffer);
 
-            this.writer.flush();
-            this.writer.close();
-        } catch (IOException var19) {
-            var19.getStackTrace();
+//            writer.write(builder.toString().getBytes());
+            }
         }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+//            this.writer.flush();
+//            this.writer.close();
+
 
         System.out.println(System.currentTimeMillis() - start + " ms");
     }
