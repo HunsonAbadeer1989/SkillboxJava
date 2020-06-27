@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/14_Performance.iml" filepath="$PROJECT_DIR$/.idea/14_Performance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CarNumberGeneratorWithJMH.iml" filepath="$PROJECT_DIR$/CarNumberGeneratorWithJMH.iml" />
     </modules>
   </component>
 </project>

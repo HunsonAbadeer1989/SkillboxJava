@@ -1,21 +1,18 @@
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-public class CarNumberGenerator implements Runnable {
+public class NewCarNumberGenerator implements Runnable {
 
-//    private FileOutputStream writer;
     private FileChannel fChannel;
     private RandomAccessFile rwriter;
     private int fromRegion;
     private int toRegion;
 
-    public CarNumberGenerator(int fileNumber, int fromRegion, int toRegion) throws FileNotFoundException {
+    public NewCarNumberGenerator(int fileNumber, int fromRegion, int toRegion) throws FileNotFoundException {
         StringBuilder fileName = (new StringBuilder()).append("res/numbers").append(fileNumber).append(".txt");
-//        this.writer = new FileOutputStream(fileName.toString());
 
         this.rwriter = new RandomAccessFile(fileName.toString(), "rw");
         this.fChannel = rwriter.getChannel();
@@ -46,16 +43,11 @@ public class CarNumberGenerator implements Runnable {
             }
             ByteBuffer buffer = ByteBuffer.wrap(builder.toString().getBytes());
             fChannel.write(buffer);
-
-//            writer.write(builder.toString().getBytes());
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-//            this.writer.flush();
-//            this.writer.close();
-
 
         System.out.println(System.currentTimeMillis() - start + " ms");
     }

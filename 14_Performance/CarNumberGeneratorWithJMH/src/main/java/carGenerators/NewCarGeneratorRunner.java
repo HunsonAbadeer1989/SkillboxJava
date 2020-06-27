@@ -1,3 +1,7 @@
+package carGenerators;
+
+import org.openjdk.jmh.annotations.*;
+
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
@@ -5,23 +9,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
-public class Loader {
+public class NewCarGeneratorRunner {
     public static final int COUNT_PROCESSORS = Runtime.getRuntime().availableProcessors();
     public static final int REGIONS = 100;
 
-    public static void main(String[] args) throws FileNotFoundException {
-        long start = System.currentTimeMillis();
+    public void getNumbers() throws FileNotFoundException {
 
         ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
         Set<Future<?>> poolSet = new HashSet<>();
 
-        int temp = REGIONS/COUNT_PROCESSORS + 1;
-        for(int i = 1, from = 1, to = temp; i <= COUNT_PROCESSORS; i++, from += to){
-            if(to * i > REGIONS){
+        int temp = REGIONS / COUNT_PROCESSORS + 1;
+        for (int i = 1, from = 1, to = temp; i <= COUNT_PROCESSORS; i++, from += to) {
+            if (to * i > REGIONS) {
                 to = REGIONS;
                 poolSet.add(pool.submit(new NewCarNumberGenerator(i, from, to)));
-            }
-            else {
+            } else {
                 poolSet.add(pool.submit(new NewCarNumberGenerator(i, from, to * i)));
             }
         }
@@ -34,6 +36,5 @@ public class Loader {
             }
         });
 
-        System.out.println((System.currentTimeMillis() - start) + " ms");
     }
 }
