@@ -1,3 +1,4 @@
 $ .gitignore
 
 res/*.txt
+target/generated-sources/

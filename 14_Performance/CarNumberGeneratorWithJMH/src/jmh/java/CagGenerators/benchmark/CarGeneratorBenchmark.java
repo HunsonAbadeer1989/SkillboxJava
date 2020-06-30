@@ -10,18 +10,30 @@ import java.util.concurrent.TimeUnit;
 
 public class CarGeneratorBenchmark {
 
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public static void testNewGenerator(NewCarGeneratorRunner state) throws FileNotFoundException {
-        state.getNumbers();
+    @State(Scope.Thread)
+    public static class MyState{
+        public NewCarGeneratorRunner newRunner = new NewCarGeneratorRunner();
+        public OldCarNumberGenerator oldGenerator = new OldCarNumberGenerator();
     }
 
+    @Fork(value = 1, warmups = 1)
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
+    @BenchmarkMode(Mode.Throughput)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public static void testOldGenerator(OldCarNumberGenerator state) throws IOException {
-        state.createNumbers();
+    public static void testNewGenerator(MyState state) throws FileNotFoundException {
+        state.newRunner.getNumbers();
+    }
+
+    @Fork(value = 1, warmups = 1)
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public static void testOldGenerator(MyState state) throws IOException {
+        state.oldGenerator.createNumbers();
     }
 
     public static void main(String[] args) throws Exception {

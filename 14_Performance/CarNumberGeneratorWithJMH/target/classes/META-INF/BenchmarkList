@@ -1,0 +1,2 @@
+JMH S 45 CagGenerators.benchmark.CarGeneratorBenchmark S 80 CagGenerators.benchmark.generated.CarGeneratorBenchmark_testNewGenerator_jmhTest S 16 testNewGenerator S 10 Throughput E A 1 1 1 E I 1 0 E E I 1 1 E E I 1 1 I 1 1 E E E E E U 7 SECONDS E E 
+JMH S 45 CagGenerators.benchmark.CarGeneratorBenchmark S 80 CagGenerators.benchmark.generated.CarGeneratorBenchmark_testOldGenerator_jmhTest S 16 testOldGenerator S 10 Throughput E A 1 1 1 E I 1 0 E E I 1 1 E E I 1 1 I 1 1 E E E E E U 7 SECONDS E E 
