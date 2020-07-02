@@ -35,6 +35,7 @@ public class DBConnection
         birthDay = birthDay.replace('.', '-');
         String sql = "SELECT id FROM voter_count WHERE birthDate='" + birthDay + "' AND name='" + name + "'";
         ResultSet rs = DBConnection.getConnection().createStatement().executeQuery(sql);
+
         if(!rs.next())
         {
             DBConnection.getConnection().createStatement()

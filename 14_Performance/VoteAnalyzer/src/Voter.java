@@ -5,6 +5,8 @@ public class Voter
 {
     private String name;
     private Date birthDay;
+    private static SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+
 
     public Voter(String name, Date birthDay)
     {
@@ -34,7 +36,7 @@ public class Voter
 
     public String toString()
     {
-        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
         return name + " (" + dayFormat.format(birthDay) + ")";
     }
 

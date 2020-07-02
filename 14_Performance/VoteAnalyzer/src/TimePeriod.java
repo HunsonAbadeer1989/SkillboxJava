@@ -6,6 +6,12 @@ public class TimePeriod implements Comparable<TimePeriod>
 {
     private long from;
     private long to;
+    private Date current;
+    private Date compared;
+    private static SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+    private static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
 
     /**
      * Time period within one day
@@ -16,7 +22,7 @@ public class TimePeriod implements Comparable<TimePeriod>
     {
         this.from = from;
         this.to = to;
-        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
         if(!dayFormat.format(new Date(from)).equals(dayFormat.format(new Date(to))))
             throw new IllegalArgumentException("Dates 'from' and 'to' must be within ONE day!");
     }
@@ -25,14 +31,14 @@ public class TimePeriod implements Comparable<TimePeriod>
     {
         this.from = from.getTime();
         this.to = to.getTime();
-        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
         if(!dayFormat.format(from).equals(dayFormat.format(to)))
             throw new IllegalArgumentException("Dates 'from' and 'to' must be within ONE day!");
     }
 
     public void appendTime(Date visitTime)
     {
-        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
         if(!dayFormat.format(new Date(from)).equals(dayFormat.format(new Date(visitTime.getTime()))))
             throw new IllegalArgumentException("Visit time must be within the same day as the current TimePeriod!");
         long visitTimeTs = visitTime.getTime();
@@ -46,8 +52,8 @@ public class TimePeriod implements Comparable<TimePeriod>
 
     public String toString()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+//        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         String from = dateFormat.format(this.from);
         String to = timeFormat.format(this.to);
         return from + "-" + to;
@@ -56,9 +62,9 @@ public class TimePeriod implements Comparable<TimePeriod>
     @Override
     public int compareTo(TimePeriod period)
     {
-        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
-        Date current = new Date();
-        Date compared = new Date();
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+        current = new Date();
+        compared = new Date();
         try {
             current = dayFormat.parse(dayFormat.format(new Date(from)));
             compared = dayFormat.parse(dayFormat.format(new Date(period.from)));

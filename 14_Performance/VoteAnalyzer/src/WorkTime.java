@@ -3,6 +3,7 @@ import java.util.TreeSet;
 
 public class WorkTime
 {
+
     private TreeSet<TimePeriod> periods;
 
     /**

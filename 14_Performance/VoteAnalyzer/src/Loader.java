@@ -25,7 +25,7 @@ public class Loader
         long memory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.printf("Memory on start: %s kb.\n ", memory/1024);
 
-        String fileName = "res/data-1M.xml";
+        String fileName = "res/data-18M.xml";
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
@@ -40,6 +40,7 @@ public class Loader
 
         memory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("Voting station work times: ");
+
         for(Integer votingStation : voteStationWorkTimes.keySet())
         {
             WorkTime workTime = voteStationWorkTimes.get(votingStation);
@@ -73,15 +74,18 @@ public class Loader
     {
         NodeList voters = doc.getElementsByTagName("voter");
         int votersCount = voters.getLength();
+        Date birthDay;
+        Voter voter;
+
         for(int i = 0; i < votersCount; i++)
         {
             Node node = voters.item(i);
             NamedNodeMap attributes = node.getAttributes();
 
             String name = attributes.getNamedItem("name").getNodeValue();
-            Date birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
+            birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
 
-            Voter voter = new Voter(name, birthDay);
+            voter = new Voter(name, birthDay);
             Integer count = voterCounts.get(voter.toString());
             voterCounts.put(voter.toString(), count == null ? 1 : count + 1);
         }
@@ -91,14 +95,17 @@ public class Loader
     {
         NodeList visits = doc.getElementsByTagName("visit");
         int visitCount = visits.getLength();
+        Date time;
+        WorkTime workTime;
+
         for(int i = 0; i < visitCount; i++)
         {
             Node node = visits.item(i);
             NamedNodeMap attributes = node.getAttributes();
 
             Integer station = Integer.parseInt(attributes.getNamedItem("station").getNodeValue());
-            Date time = visitDateFormat.parse(attributes.getNamedItem("time").getNodeValue());
-            WorkTime workTime = voteStationWorkTimes.get(station);
+            time = visitDateFormat.parse(attributes.getNamedItem("time").getNodeValue());
+            workTime = voteStationWorkTimes.get(station);
             if(workTime == null)
             {
                 workTime = new WorkTime();

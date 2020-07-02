@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XMLHandler extends DefaultHandler {
+
     private Voter voter;
     private static SimpleDateFormat birthDayFormat = new SimpleDateFormat("yyyy.MM.dd");
 
