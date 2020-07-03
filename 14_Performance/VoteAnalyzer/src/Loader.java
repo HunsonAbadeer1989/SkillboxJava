@@ -33,12 +33,18 @@ public class Loader
         parser.parse(new File(fileName), handler);
         handler.printDuplicatedVoters();
 
-        parseFile(fileName);
-
         memory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() - memory;
         System.out.printf("Memory spends with SAX: %s kb. \n", memory/1024);
-
         memory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        parseFile(fileName);
+
+//        DBConnection.printVoterCounts();
+
+        /**
+         * HomeWork 14.12 was commended
+         */
+
         System.out.println("Voting station work times: ");
 
         for(Integer votingStation : voteStationWorkTimes.keySet())
@@ -58,6 +64,7 @@ public class Loader
 
         memory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() - memory;
         System.out.printf("Memory spends with DOM: %s kb.\n", memory/1024);
+
     }
 
     private static void parseFile(String fileName) throws Exception
@@ -74,7 +81,6 @@ public class Loader
     {
         NodeList voters = doc.getElementsByTagName("voter");
         int votersCount = voters.getLength();
-        Date birthDay;
         Voter voter;
 
         for(int i = 0; i < votersCount; i++)
@@ -83,8 +89,10 @@ public class Loader
             NamedNodeMap attributes = node.getAttributes();
 
             String name = attributes.getNamedItem("name").getNodeValue();
-            birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
+//            String birthDay = attributes.getNamedItem("birthDay").getNodeValue();
+            Date birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
 
+//            DBConnection.countVoter(name, birthDay);
             voter = new Voter(name, birthDay);
             Integer count = voterCounts.get(voter.toString());
             voterCounts.put(voter.toString(), count == null ? 1 : count + 1);
@@ -95,7 +103,6 @@ public class Loader
     {
         NodeList visits = doc.getElementsByTagName("visit");
         int visitCount = visits.getLength();
-        Date time;
         WorkTime workTime;
 
         for(int i = 0; i < visitCount; i++)
@@ -104,7 +111,7 @@ public class Loader
             NamedNodeMap attributes = node.getAttributes();
 
             Integer station = Integer.parseInt(attributes.getNamedItem("station").getNodeValue());
-            time = visitDateFormat.parse(attributes.getNamedItem("time").getNodeValue());
+            Date time = visitDateFormat.parse(attributes.getNamedItem("time").getNodeValue());
             workTime = voteStationWorkTimes.get(station);
             if(workTime == null)
             {

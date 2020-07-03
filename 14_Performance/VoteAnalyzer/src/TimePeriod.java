@@ -38,10 +38,11 @@ public class TimePeriod implements Comparable<TimePeriod>
 
     public void appendTime(Date visitTime)
     {
-//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
-        if(!dayFormat.format(new Date(from)).equals(dayFormat.format(new Date(visitTime.getTime()))))
-            throw new IllegalArgumentException("Visit time must be within the same day as the current TimePeriod!");
         long visitTimeTs = visitTime.getTime();
+//        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
+        if(!Long.valueOf(from).equals(visitTimeTs)) {
+            throw new IllegalArgumentException("Visit time must be within the same day as the current TimePeriod!");
+        }
         if(visitTimeTs < from) {
             from = visitTimeTs;
         }
@@ -63,14 +64,11 @@ public class TimePeriod implements Comparable<TimePeriod>
     public int compareTo(TimePeriod period)
     {
 //        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
-        current = new Date();
-        compared = new Date();
-        try {
-            current = dayFormat.parse(dayFormat.format(new Date(from)));
-            compared = dayFormat.parse(dayFormat.format(new Date(period.from)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return current.compareTo(compared);
+        //            current = dayFormat.parse(dayFormat.format(new Date(from)));
+//            compared = dayFormat.parse(dayFormat.format(new Date(period.from)));
+        String cur = String.valueOf(from);
+        String comp = String.valueOf(period.from);
+        //        return current.compareTo(compared);
+        return cur.compareTo(comp);
     }
 }
