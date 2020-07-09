@@ -50,7 +50,7 @@ public class DBConnection
         insertQuery.insert(0, "INSERT INTO voter_count(name, birthDate, `count`) VALUES");
         insertQuery.append(" ON DUPLICATE KEY UPDATE `count`=`count`+1");
         Set<Future<?>> futures = new HashSet<>();
-        ExecutorService service = Executors.newSingleThreadExecutor();
+        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         futures.add(service.submit(new Runnable() {
             @Override
             public void run() {
@@ -103,6 +103,7 @@ public class DBConnection
 
     public static void printVoterCounts() throws SQLException
     {
+        createIndex();
         String sql = "SELECT name, birthDate, `count` FROM voter_count WHERE `count` > 1";
         ResultSet rs = DBConnection.getConnection().createStatement().executeQuery(sql);
         while(rs.next())
@@ -110,5 +111,9 @@ public class DBConnection
             System.out.println("\t" + rs.getString("name") + " (" +
                     rs.getString("birthDate") + ") - " + rs.getInt("count"));
         }
+    }
+
+    public static void createIndex() throws SQLException {
+        connection.createStatement().execute("CREATE INDEX `count_index` ON `voter_count` (count)");
     }
 }
