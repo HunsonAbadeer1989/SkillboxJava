@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="HDFSExample:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/HDFSExample_jar</output-path>
+    <root id="archive" name="HDFSExample.jar">
+      <element id="module-output" name="HDFSExample" />
+    </root>
+  </artifact>
+</component>
