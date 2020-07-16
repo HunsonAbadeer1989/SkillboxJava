@@ -1,5 +1,4 @@
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 
@@ -22,14 +21,10 @@ public class SparkMain {
                 .appName("JavaWordCount")
                 .getOrCreate();
 
-        JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
-
-        JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(SPACE.
-                split(s.replaceAll("\\p{Punct}", ""))).iterator());
-
-        JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
-
-        JavaPairRDD<String, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
+        JavaPairRDD<String, Integer> counts = spark.read().textFile(args[0]).javaRDD()
+                                                  .flatMap(s -> Arrays.asList(SPACE.split(s))
+                                                       .iterator()).mapToPair(s -> new Tuple2<>(s, 1))
+                                                              .reduceByKey((i1, i2) -> i1 + i2);
 
         counts.saveAsTextFile(args[1]);
 

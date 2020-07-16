@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 public class Main
 {
     private static String symbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String HADOOP_CONTAINER_ID = "2fa07e42c821";
+    private static final String HADOOP_CONTAINER_ID = "820c5677e047";
     private static final String HADOOP_PATH = "hdfs://" + HADOOP_CONTAINER_ID + ":8020/";
     private static final String SOURCE_FILE = "src/main/resources/text.txt";
 
